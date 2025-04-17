@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const swaggerUI = require('swagger-ui-express')
+const swaggerSettings = require('~/initialization/swaggerSettings')
 
 const {
   config: { CLIENT_URL }
@@ -10,6 +12,8 @@ const { createNotFoundError } = require('~/utils/errorsHelper')
 const errorMiddleware = require('~/middlewares/error')
 
 const initialization = (app) => {
+  app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerSettings))
+
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: true }))
   app.use(cookieParser())
