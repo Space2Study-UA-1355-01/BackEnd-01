@@ -53,13 +53,7 @@ router.get('/confirm-email', async (req, res) => {
     findUser.isEmailConfirmed = true;
     await findUser.save();
 
-    res.send(`
-      <html>
-        <body>
-          <h2>✅ Email success!</h2>
-        </body>
-      </html>
-    `);
+    res.redirect('http://localhost:3000');
   } catch (err) {
     console.error('Token verification error:', err); 
     res.status(400).send('❌ Invalid or expired token');
