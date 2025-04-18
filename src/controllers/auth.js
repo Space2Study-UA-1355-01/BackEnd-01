@@ -6,6 +6,8 @@ const {
 const {
   tokenNames: { REFRESH_TOKEN, ACCESS_TOKEN }
 } = require('~/consts/auth')
+const user = require('~/models/user');
+const jwt = require('jsonwebtoken');
 
 const COOKIE_OPTIONS = {
   maxAge: oneDayInMs,
@@ -86,11 +88,36 @@ const updatePassword = async (req, res) => {
   res.status(204).end()
 }
 
+const confirmEmail = async (req, res) => {
+  const token = req.query.token;
+
+  if (!token) {
+    return res.status(400).json({ message: 'Token not found' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_CONFIRM_SECRET);
+
+    const findUser = await user.findById(decoded.id);
+    if (!findUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    findUser.isEmailConfirmed = true;
+    await findUser.save();
+
+    res.redirect(process.env.CLIENT_URL || 'http://localhost:3000');
+  } catch (err) {
+    res.status(400).send('Invalid or expired token');
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
   refreshAccessToken,
   sendResetPasswordEmail,
-  updatePassword
+  updatePassword,
+  confirmEmail
 }
