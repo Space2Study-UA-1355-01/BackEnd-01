@@ -37,8 +37,7 @@ const authService = {
       throw createError(401, USER_NOT_FOUND)
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password)
-    const checkedPassword = isPasswordCorrect || isFromGoogle
+    const checkedPassword = isFromGoogle || await bcrypt.compare(password, user.password)
 
     if (!checkedPassword) {
       throw createError(401, INCORRECT_CREDENTIALS)
