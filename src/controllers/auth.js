@@ -90,7 +90,6 @@ const updatePassword = async (req, res) => {
 
 
 const confirmEmail = async (req, res, next) => {
-  console.log('Controller');
   try {
     const { confirmToken } = req.params; 
     const result = await authService.confirmEmail(confirmToken);

@@ -131,9 +131,6 @@ const authService = {
     if (!user) {
       throw createError(400, BAD_CONFIRM_TOKEN);
     }
-
-    console.log('Confirming email for user:', user._id);
-    console.log('user.isEmailConfirmed:', user.isEmailConfirmed);
   
     if (user.isEmailConfirmed == true) {
       throw createError(400, EMAIL_ALREADY_CONFIRMED);
