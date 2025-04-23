@@ -37,7 +37,7 @@ describe('countryService', () => {
 
       const result = await countryService.getCountries();
 
-      expect(axios.get).toHaveBeenCalledWith('https://api.countrystatecity.in/v1/countries', {
+      expect(axios.get).toHaveBeenCalledWith(`${process.env.COUNTRY_BASE_URL}/countries`, {
         headers: { 'X-CSCAPI-KEY': process.env.COUNTRY_API_KEY }
       });
       expect(result).toEqual(mockCountries);
