@@ -2,6 +2,7 @@ const countryService = require('~/services/countries');
 const axios = require('axios');
 
 jest.mock('axios');
+require('dotenv').config({ path: '.env.local' });
 
 describe('countryService', () => {
 
@@ -37,7 +38,7 @@ describe('countryService', () => {
       const result = await countryService.getCountries();
 
       expect(axios.get).toHaveBeenCalledWith('https://api.countrystatecity.in/v1/countries', {
-        headers: { 'X-CSCAPI-KEY': 'OWRxZlBwaXpIWXlYN3loZlB6cm1hdkhpWHVNeUthR1lFVlU3S21vWA==' }
+        headers: { 'X-CSCAPI-KEY': process.env.COUNTRY_API_KEY }
       });
       expect(result).toEqual(mockCountries);
     });
