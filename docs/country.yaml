@@ -104,3 +104,4 @@ paths:
                   message:
                     type: string
                     example: "Error with getting cities in country with UA"
+

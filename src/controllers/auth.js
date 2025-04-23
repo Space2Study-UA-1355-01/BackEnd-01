@@ -88,29 +88,12 @@ const updatePassword = async (req, res) => {
   res.status(204).end()
 }
 
+
 const confirmEmail = async (req, res) => {
-  const token = req.query.token;
-
-  if (!token) {
-    return res.status(400).json({ message: 'Token not found' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_CONFIRM_SECRET);
-
-    const findUser = await user.findById(decoded.id);
-    if (!findUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    findUser.isEmailConfirmed = true;
-    await findUser.save();
-
-    res.redirect(process.env.CLIENT_URL || 'http://localhost:3000');
-  } catch (err) {
-    res.status(400).send('Invalid or expired token');
-  }
-};
+    const { confirmToken } = req.params; 
+    const result = await authService.confirmEmail(confirmToken);
+    res.status(200).json(result)
+}
 
 module.exports = {
   signup,

@@ -38,7 +38,7 @@ function updateEnvContent(envContent, key, value) {
 envContent = updateEnvContent(envContent, 'JWT_ACCESS_SECRET', accessSecret);
 envContent = updateEnvContent(envContent, 'JWT_REFRESH_SECRET', refreshSecret);
 envContent = updateEnvContent(envContent, 'JWT_RESET_SECRET', resetSecret);
-envContent = updateEnvContent(envContent, 'JWT_CONFIRM_SECRET', confirmationSecret);  // изменено
+envContent = updateEnvContent(envContent, 'JWT_CONFIRM_SECRET', confirmationSecret);
 
 try {
   fs.writeFileSync(envFilePath, envContent, 'utf8');
