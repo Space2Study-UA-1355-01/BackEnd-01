@@ -53,4 +53,37 @@ describe('countryService', () => {
         }
       });
   });
+
+  describe('getCitiesByCountryIso2', () => {
+    it('should return a list of cities sorted alphabetically from the external API for Ukraine', async () => {
+      const mockCities = [
+        { name: 'Kyiv', state: 'Kyiv' },
+        { name: 'Lviv', state: 'Lviv' },
+        { name: 'Odessa', state: 'Odessa' },
+      ];
+
+      axios.get.mockResolvedValue({ data: mockCities });
+
+      const result = await countryService.getCitiesByCountryIso2('UA');
+
+      expect(axios.get).toHaveBeenCalledWith(`${process.env.COUNTRY_BASE_URL}/countries/UA/cities`, {
+        headers: { 'X-CSCAPI-KEY': process.env.COUNTRY_API_KEY }
+      });
+      expect(result).toEqual([
+        { name: 'Kyiv', state: 'Kyiv' },
+        { name: 'Lviv', state: 'Lviv' },
+        { name: 'Odessa', state: 'Odessa' }
+      ]);
+    });
+
+    it('should throw an error if the external API fails for cities', async () => {
+      axios.get.mockRejectedValueOnce(new Error('Error fetching cities'));
+      
+      try {
+        await countryService.getCitiesByCountryIso2('UA');
+      } catch (error) {
+        expect(error.message).toBe('Error with getting cities in country with UA');
+      }
+    });
+  });
 });
