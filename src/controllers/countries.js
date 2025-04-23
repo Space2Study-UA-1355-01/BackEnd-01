@@ -19,6 +19,9 @@ const fetchCitiesByCountry = async (req, res) => {
 
   try {
     const cities = await countriesService.getCitiesByCountryIso2(countryCode);
+    if (!cities || cities.length === 0) {
+      return res.status(404).json({ message: `No cities found for country code '${countryCode}'` });
+    }
     res.json(cities);
   } catch (error) {
     console.error(error);
