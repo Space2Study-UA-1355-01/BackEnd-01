@@ -95,6 +95,14 @@ const errors = {
     code: 'INVALID_LANGUAGE',
     message: `The language name is invalid. Possible options: ${APP_LANG_ENUM.join(', ')}.`
   },
+  BAD_CONFIRM_TOKEN: {
+    code: 'BAD_CONFIRM_TOKEN',
+    message: 'Bad confirmation token.'
+  },
+  EMAIL_ALREADY_CONFIRMED:{
+    code: 'EMAIL_ALREADY_CONFIRMED',
+    message: 'User with this email is already confirmed'
+  },
   DOCUMENT_NOT_FOUND: (document) => ({
     code: 'DOCUMENT_NOT_FOUND',
     message: `${document} with the specified ${document.length > 1 ? 'IDs were' : 'ID was'} not found.`

@@ -7,12 +7,16 @@ const {
   INCORRECT_CREDENTIALS,
   BAD_RESET_TOKEN,
   BAD_REFRESH_TOKEN,
-  USER_NOT_FOUND
+  USER_NOT_FOUND,
+  BAD_CONFIRM_TOKEN,
+  DOCUMENT_NOT_FOUND,
+  EMAIL_ALREADY_CONFIRMED
 } = require('~/consts/errors')
 const emailSubject = require('~/consts/emailSubject')
 const {
   tokenNames: { REFRESH_TOKEN, RESET_TOKEN, CONFIRM_TOKEN }
 } = require('~/consts/auth')
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const SALT_ROUNDS = 10
 
@@ -113,6 +117,30 @@ const authService = {
     await emailService.sendEmail(email, emailSubject.SUCCESSFUL_PASSWORD_RESET, language, {
       firstName
     })
+  },
+
+  confirmEmail: async (confirmToken) => {
+    if (!confirmToken) {
+      throw createError(400, BAD_CONFIRM_TOKEN);
+    }
+  
+    const tokenData = jwt.verify(confirmToken, process.env.JWT_CONFIRM_SECRET);
+  
+    if (!tokenData || !tokenData.id) {
+      throw createError(400, BAD_CONFIRM_TOKEN);
+    }
+  
+    const user = await getUserById(tokenData.id);
+    if (!user) {
+      throw createError(400, BAD_CONFIRM_TOKEN);
+    }
+  
+    if (user.isEmailConfirmed == true) {
+      throw createError(400, EMAIL_ALREADY_CONFIRMED);
+    }
+  
+    await privateUpdateUser(user._id, { isEmailConfirmed: true });
+    return { message: 'Email successfully confirmed' };
   }
 }
 
