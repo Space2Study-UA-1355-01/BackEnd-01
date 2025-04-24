@@ -6,6 +6,10 @@ components:
         - name
         - appearance
       properties:
+        _id:
+          type: string
+          description: The unique identifier of the category
+          example: "60c72b2f5f9b2f1b32c87c2a"
         name:
           type: string
           example: "Design"
@@ -24,3 +28,13 @@ components:
               type: string
               example: "#66C42C"
               description: Color of the category icon. Defaults to '#66C42C'.
+        createdAt:
+          type: string
+          format: date-time
+          description: The time when the category was created
+          example: "2021-06-24T15:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The last time the category was updated
+          example: "2021-06-24T16:00:00Z"
