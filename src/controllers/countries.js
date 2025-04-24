@@ -3,11 +3,14 @@ const countriesService = require('../services/countries');
 const fetchCountries = async (req, res) => {
   const { search = '', page = 1, limit = 20 } = req.query;
 
+  const parsedPage = Math.max(1, parseInt(page) || 1);
+  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit) || 20));
+
   try {
     const countries = await countriesService.getCountries({
       search,
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: parsedPage,
+      limit: parsedLimit,
     });
 
     if (!countries || countries.data.length === 0) {
@@ -29,11 +32,14 @@ const fetchCitiesByCountry = async (req, res) => {
     return res.status(400).json({ message: 'Country code is required' });
   }
 
+  const parsedPage = Math.max(1, parseInt(page) || 1);
+  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit) || 20));
+
   try {
     const cities = await countriesService.getCitiesByCountryIso2(countryCode, {
       search,
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: parsedPage,
+      limit: parsedLimit,
     });
 
     if (!cities || cities.data.length === 0) {
@@ -51,4 +57,3 @@ module.exports = {
   fetchCountries,
   fetchCitiesByCountry,
 };
-
