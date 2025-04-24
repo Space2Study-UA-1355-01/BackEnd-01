@@ -8,6 +8,7 @@ const question = require('~/routes/question')
 const resourcesCategory = require('~/routes/resourcesCategory')
 const offer = require('~/routes/offer')
 const country = require('~/routes/countries')
+const uploadRoutes = require('~/routes/uploadPhoto')
 
 router.use('/auth', auth)
 router.use('/users', user)
@@ -17,5 +18,6 @@ router.use('/questions', question)
 router.use('/resources-categories', resourcesCategory)
 router.use('/offers', offer)
 router.use('/countries', country)
+router.use('/upload', uploadRoutes)
 
 module.exports = router
