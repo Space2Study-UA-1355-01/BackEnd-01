@@ -1,4 +1,9 @@
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Subject:
       type: object
@@ -39,3 +44,78 @@ components:
           format: date-time
           description: The last time the subject was updated
           example: "2021-06-24T16:00:00Z"
+paths:
+/subjects:
+    get:
+      tags:
+        - Subjects
+      summary: Get a paginated and filtered list of subjects
+      description: Returns subjects with optional filtering by name and pagination.
+      operationId: getSubjects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter subjects by name starting with this string.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+          description: Number of subjects per page.
+      responses:
+  '200':
+    description: List of subjects
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Subject'
+              example:
+                - _id: "680aba16c2b544ce98e8d35b"
+                  name: "JavaScript"
+                  category:
+                    _id: "68081d3202a459c8915433c7"
+                    name: "Development"
+                    appearance:
+                      icon: "icons/dev.svg"
+                      color: "#66C42C"
+                  totalOffers:
+                    student: 0
+                    tutor: 0
+                  createdAt: "2025-04-24T22:24:22.404Z"
+                  updatedAt: "2025-04-24T22:24:22.404Z"
+            total:
+              type: integer
+              example: 6
+            page:
+              type: integer
+              example: 1
+            limit:
+              type: integer
+              example: 20
+            totalPages:
+              type: integer
+              example: 1
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
