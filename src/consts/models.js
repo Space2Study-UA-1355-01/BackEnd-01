@@ -13,7 +13,8 @@ const refs = {
   ATTACHMENT: 'Attachment',
   QUESTION: 'Question',
   RESOURCES_CATEGORY: 'ResourcesCategory',
-  CATEGORY: 'Category'
+  CATEGORY: 'Category',
+  SUBJECT: 'Subject'
 }
 
 module.exports = refs

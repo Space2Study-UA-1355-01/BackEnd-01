@@ -1,0 +1,41 @@
+components:
+  schemas:
+    Subject:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the subject
+          example: "60c72b2f5f9b2f1b32c87c2a"
+        name:
+          type: string
+          description: The name of the subject
+          example: "Math"
+        category:
+          type: string
+          description: The category ID to which the subject belongs (references a category)
+          example: "60c72b2f5f9b2f1b32c87c2b"
+        totalOffers:
+          type: object
+          properties:
+            student:
+              type: integer
+              description: The number of offers available for students in this subject
+              example: 100
+            tutor:
+              type: integer
+              description: The number of offers available for tutors in this subject
+              example: 25
+        createdAt:
+          type: string
+          format: date-time
+          description: The time when the subject was created
+          example: "2021-06-24T15:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The last time the subject was updated
+          example: "2021-06-24T16:00:00Z"
