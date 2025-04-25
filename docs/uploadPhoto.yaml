@@ -1,6 +1,8 @@
 paths:
   /upload:
     post:
+      security:
+        - bearerAuth: [ ]
       tags:
         - Upload
       summary: Upload a user photo
@@ -15,7 +17,10 @@ paths:
                 image:
                   type: string
                   format: binary
-                  description: The image file to be uploaded
+                  description: |
+                    The image file to be uploaded.
+                    - Allowed formats: JPEG, PNG, JPG
+                    - Maximum file size: 10MB
       responses:
         '200':
           description: Image uploaded successfully
@@ -41,7 +46,7 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Image is required"
+                    example: "No file provided"
         '500':
           description: Internal server error during upload
           content:
