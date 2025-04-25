@@ -78,43 +78,43 @@ paths:
             minimum: 1
           description: Number of subjects per page.
       responses:
-  '200':
-    description: List of subjects
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/Subject'
-              example:
-                - _id: "680aba16c2b544ce98e8d35b"
-                  name: "JavaScript"
-                  category:
-                    _id: "68081d3202a459c8915433c7"
-                    name: "Development"
-                    appearance:
-                      icon: "icons/dev.svg"
-                      color: "#66C42C"
-                  totalOffers:
-                    student: 0
-                    tutor: 0
-                  createdAt: "2025-04-24T22:24:22.404Z"
-                  updatedAt: "2025-04-24T22:24:22.404Z"
-            total:
-              type: integer
-              example: 6
-            page:
-              type: integer
-              example: 1
-            limit:
-              type: integer
-              example: 20
-            totalPages:
-              type: integer
-              example: 1
+        '200':
+          description: List of subjects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+                    example:
+                      - _id: "680aba16c2b544ce98e8d35b"
+                        name: "JavaScript"
+                        category:
+                          _id: "68081d3202a459c8915433c7"
+                          name: "Development"
+                          appearance:
+                            icon: "icons/dev.svg"
+                            color: "#66C42C"
+                        totalOffers:
+                          student: 0
+                          tutor: 0
+                        createdAt: "2025-04-24T22:24:22.404Z"
+                        updatedAt: "2025-04-24T22:24:22.404Z"
+                  total:
+                    type: integer
+                    example: 6
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 20
+                  totalPages:
+                    type: integer
+                    example: 1
         '401':
           description: Unauthorized – JWT token is missing or invalid
         '403':
