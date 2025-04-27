@@ -1,4 +1,5 @@
 const cloudinary = require('../configs/cloudinary')
+const User = require('~/models/user')
 
 const uploadImage = async (buffer) => {
   return new Promise((resolve, reject) => {
@@ -31,7 +32,11 @@ const uploadController = async (req, res) => {
 
     const result = await uploadImage(req.file.buffer)
 
+    const userId = req.user.id
+    await User.findByIdAndUpdate(userId, { photo: result.public_id })
+
     res.status(200).json({
+      message: 'Image uploaded successfully',
       url: result.secure_url,
       public_id: result.public_id
     })
