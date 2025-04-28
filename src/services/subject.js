@@ -27,6 +27,19 @@ const subjectService = {
       limit,
       totalPages: Math.ceil(total / limit)
     };
+  },
+
+  getSubjectById: async (subjectId) => {
+
+    const subject = await Subject.findById(subjectId).lean().exec();
+
+    if (!subject) {
+      const error = new Error('Subject not found.');
+      error.status = 404;
+      throw error;
+    }
+
+    return subject;
   }
 };
 
