@@ -104,7 +104,6 @@ paths:
           description: Unauthorized – JWT token is missing or invalid
         '403':
           description: Forbidden – User doesn't have access
-paths:
     /categories/{id}/subjects/names:
       get:
         tags:
@@ -169,7 +168,7 @@ paths:
                       example: 1
           '401':
             description: Unauthorized – JWT token is missing or invalid
-          '403':
+          '403': implement get names by category id endpoint
             description: Forbidden – User doesn't have access
           '404':
             description: No subjects found for this category
