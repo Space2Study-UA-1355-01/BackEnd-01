@@ -1,4 +1,4 @@
-const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerJsDoc = require('swagger-jsdoc');
 
 const swaggerOptions = {
   definition: {
@@ -18,6 +18,14 @@ const swaggerOptions = {
     }
   },
   apis: ['./docs/*.yaml']
+};
+
+let swaggerSpec;
+try {
+  swaggerSpec = swaggerJsDoc(swaggerOptions);
+} catch (error) {
+  console.error('Error with creating Swagger documentation:', error);
+  swaggerSpec = {}; 
 }
 
-module.exports = swaggerJsDoc(swaggerOptions)
+module.exports = swaggerSpec;
