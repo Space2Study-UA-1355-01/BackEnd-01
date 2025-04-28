@@ -174,3 +174,49 @@ paths:
           description: No subjects found for this category
         '400':
           description: Invalid category ID format
+  /categories/{id}:
+    get:
+      summary: Get category by ID
+      description: This endpoint allows you to get detailed information about a category by its unique identifier.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response — category found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier of the category
+                  name:
+                    type: string
+                    description: The name of the category
+                  appearance:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                        description: The path to the category's icon
+                      color:
+                        type: string
+                        description: The color of the category in HEX format
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The time the category was created
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The time the category was last updated
+        '400':
+          description: Invalid category ID format
+        '404':
+          description: Category not found

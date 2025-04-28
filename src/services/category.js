@@ -61,8 +61,19 @@ const categoryService = {
       limit,
       totalPages: Math.ceil(total / limit)
     };
-  }
+  },
   
+  getCategoryById: async (categoryId) => {
+    const category = await Category.findById(categoryId).lean().exec();
+  
+    if (!category) {
+      const error = new Error('Category not found.');
+      error.status = 404;
+      throw error;
+    }
+  
+    return category;
+  }
 };
 
 

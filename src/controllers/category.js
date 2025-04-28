@@ -36,7 +36,20 @@ const getSubjectNamesByCategoryId = async (req, res) => {
   res.status(200).json(subjectNames);
 };
 
+const getCategoryById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid category ID format.' });
+  }
+
+  const category = await categoryService.getCategoryById(id);
+  
+  res.status(200).json(category);
+};
+
 module.exports = {
   getCategories,
   getSubjectNamesByCategoryId,
+  getCategoryById
 };
