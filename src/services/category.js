@@ -74,6 +74,7 @@ const categoryService = {
   
     return category;
   }
+  
 };
 
 

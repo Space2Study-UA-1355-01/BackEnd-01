@@ -22,5 +22,4 @@ router.get(
   restrictTo('student', 'tutor'), 
   asyncWrapper(categoryController.getCategoryById)
 );
-
 module.exports = router

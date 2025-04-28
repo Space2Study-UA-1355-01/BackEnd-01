@@ -226,4 +226,3 @@ paths:
           description: No subjects found for this category
         '400':
           description: Invalid category ID format
-  
