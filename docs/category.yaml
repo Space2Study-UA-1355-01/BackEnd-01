@@ -266,26 +266,26 @@ paths:
               schema:
                 type: object
                 properties:
-                data:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                        example: "Mathematics"
-                  total:
-                    type: integer
-                    example: 2
-                  page:
-                    type: integer
-                    example: 1
-                  limit:
-                    type: integer
-                    example: 20
-                  totalPages:
-                    type: integer
-                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Mathematics"
+                    total:
+                      type: integer
+                      example: 2
+                    page:
+                      type: integer
+                      example: 1
+                    limit:
+                      type: integer
+                      example: 20
+                    totalPages:
+                      type: integer
+                      example: 1
       '401':
         description: Unauthorized – JWT token is missing or invalid
       '403':
