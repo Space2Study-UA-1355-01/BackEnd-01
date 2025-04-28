@@ -1,0 +1,59 @@
+paths:
+  /upload:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Upload
+      summary: Upload a user photo
+      description: Uploads an image to Cloudinary and returns the public ID and secure URL of the uploaded file.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: |
+                    The image file to be uploaded.
+                    - Allowed formats: JPEG, PNG, JPG
+                    - Maximum file size: 10MB
+      responses:
+        '200':
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  public_id:
+                    type: string
+                    example: "sp_project/images/avatar_123"
+                    description: Public Cloudinary ID for the uploaded image
+                  url:
+                    type: string
+                    example: "https://res.cloudinary.com/example/image/upload/v1740000000/sp_project/images/avatar_123.jpg"
+                    description: Direct HTTPS link to the uploaded image
+        '400':
+          description: No image file provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No file provided"
+        '500':
+          description: Internal server error during upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to upload image"
