@@ -106,6 +106,8 @@ paths:
           description: Forbidden – User doesn't have access
   /categories/{id}:
     get:
+      tags:
+        - Categories
       summary: Get category by ID
       description: This endpoint allows you to get detailed information about a category by its unique identifier.
       operationId: getCategoryById
