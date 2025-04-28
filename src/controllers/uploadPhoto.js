@@ -1,14 +1,16 @@
 const cloudinary = require('../configs/cloudinary')
 const User = require('~/models/user')
 
-const uploadImage = async (buffer) => {
+const uploadImage = async (buffer, userId) => {
+  const folderPath = `sp_project/users/${userId}`
+
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         use_filename: true,
         unique_filename: true,
         overwrite: true,
-        folder: 'sp_project/images',
+        folder: `${folderPath}`,
         transformation: [
           { width: 600, crop: 'limit' },
           { fetch_format: 'auto', quality: 'auto' }
@@ -30,9 +32,8 @@ const uploadController = async (req, res) => {
       return res.status(400).json({ code: 'No file provided' })
     }
 
-    const result = await uploadImage(req.file.buffer)
-
     const userId = req.user.id
+    const result = await uploadImage(req.file.buffer, userId)
     await User.findByIdAndUpdate(userId, { photo: result.public_id })
 
     res.status(200).json({
