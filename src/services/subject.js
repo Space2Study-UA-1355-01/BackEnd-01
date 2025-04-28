@@ -1,8 +1,8 @@
 const Subject = require('~/models/subject');
-const Category = require('~/models/category');
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
+    
     const query = {};
 
     if (search) {
@@ -21,12 +21,8 @@ const subjectService = {
       Subject.countDocuments(query)
     ]);
 
-    const subjectsWithCategoryNames = subjects.map(subject => ({
-      ...subject, 
-    }));
-
     return {
-      data: subjectsWithCategoryNames,
+      data: subjects,
       total,
       page,
       limit,
