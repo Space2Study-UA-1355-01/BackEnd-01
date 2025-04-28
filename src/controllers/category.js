@@ -1,4 +1,5 @@
 const categoryService = require('~/services/category')
+const mongoose = require('mongoose');
 
 const getCategories = async (req, res) => {
   const { search = '', page = 1, limit = 20 } = req.query;
@@ -15,6 +16,27 @@ const getCategories = async (req, res) => {
   res.status(200).json(categories);
 };
 
+const getSubjectNamesByCategoryId = async (req, res) => {
+  const { id } = req.params;
+  const { search = '', page = 1, limit = 20 } = req.query;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid category ID format.' });
+  }
+
+  const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
+
+  const subjectNames = await categoryService.getSubjectNamesByCategoryId(id, {
+    search,
+    page: parsedPage,
+    limit: parsedLimit,
+  });
+
+  res.status(200).json(subjectNames);
+};
+
 module.exports = {
   getCategories,
+  getSubjectNamesByCategoryId,
 };

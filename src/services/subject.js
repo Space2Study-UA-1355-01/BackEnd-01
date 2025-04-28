@@ -2,7 +2,6 @@ const Subject = require('~/models/subject');
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
-    
     const query = {};
 
     if (search) {
