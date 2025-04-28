@@ -11,6 +11,12 @@ router.get(
   asyncWrapper(categoryController.getCategories)
 )
 router.get(
+  '/names',
+  authMiddleware,
+  restrictTo('student', 'tutor'),
+  asyncWrapper(categoryController.getCategoryNames)
+);
+router.get(
   '/:id/subjects/names',
   authMiddleware,
   restrictTo('student', 'tutor'),

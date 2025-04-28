@@ -73,6 +73,44 @@ const categoryService = {
     }
   
     return category;
+  },
+
+  getCategoryNames: async ({ search = '', page = 1, limit = 20 } = {}) => {
+    const query = {};
+  
+    if (search) {
+      query.name = { $regex: `^${search}`, $options: 'i' };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [categories, total] = await Promise.all([
+      Category.find(query)
+        .skip(skip)
+        .limit(limit)
+        .select('name')
+        .lean()
+        .exec(),
+      Category.countDocuments(query)
+    ]);
+
+    if (!categories.length) {
+      const error = new Error('Category not found.');
+      error.status = 404;
+      throw error;
+    }
+  
+    const names = categories.map(category => ({
+      name: category.name
+    }));
+  
+    return {
+      data: names,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
   
 };
