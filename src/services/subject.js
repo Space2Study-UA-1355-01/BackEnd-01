@@ -31,7 +31,10 @@ const subjectService = {
 
   getSubjectById: async (subjectId) => {
 
-    const subject = await Subject.findById(subjectId).lean().exec();
+    const subject = await Subject.findById(subjectId)
+      .populate('category', 'name appearance')
+      .lean()
+      .exec();
 
     if (!subject) {
       const error = new Error('Subject not found.');

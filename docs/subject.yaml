@@ -142,7 +142,6 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subject' 
                 type: object
                 properties:
                   _id:
