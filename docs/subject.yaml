@@ -120,3 +120,64 @@ paths:
           description: Unauthorized – JWT token is missing or invalid
         '403':
           description: Forbidden – User doesn't have access
+  /subjects/{id}:
+    get:
+      tags:
+        - Subjects
+      summary: Get subject by ID
+      description: This endpoint allows you to get detailed information about a subject by its unique identifier.
+      operationId: getSubjectById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the subject
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response — subject found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject' 
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier of the subject
+                  name:
+                    type: string
+                    description: The name of the subject
+                  category:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The ID of the category
+                      name:
+                        type: string
+                        description: The name of the category
+                      appearance:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                            description: The path to the category's icon
+                          color:
+                            type: string
+                            description: The color of the category in HEX format
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was created
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was last updated
+        '400':
+          description: Invalid subject ID format
+        '404':
+          description: Subject not found
