@@ -104,7 +104,6 @@ paths:
           description: Unauthorized – JWT token is missing or invalid
         '403':
           description: Forbidden – User doesn't have access
-  /categories:
     post:
       tags:
         - Categories
