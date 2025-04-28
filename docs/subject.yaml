@@ -44,8 +44,9 @@ components:
           format: date-time
           description: The last time the subject was updated
           example: "2021-06-24T16:00:00Z"
+
 paths:
-/subjects:
+  /subjects:
     get:
       tags:
         - Subjects
@@ -105,7 +106,7 @@ paths:
                         updatedAt: "2025-04-24T22:24:22.404Z"
                   total:
                     type: integer
-                    example: 6
+                    example: 3
                   page:
                     type: integer
                     example: 1
