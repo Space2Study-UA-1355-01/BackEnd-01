@@ -1,0 +1,228 @@
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Category:
+      type: object
+      required:
+        - name
+        - appearance
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the category
+          example: "60c72b2f5f9b2f1b32c87c2a"
+        name:
+          type: string
+          example: "Design"
+          description: Unique name of the category.
+        appearance:
+          type: object
+          required:
+            - icon
+            - color
+          properties:
+            icon:
+              type: string
+              example: "path/to/icon.svg"
+              description: Path to the category icon. Defaults to 'mocked-path-to-icon'.
+            color:
+              type: string
+              example: "#66C42C"
+              description: Color of the category icon. Defaults to '#66C42C'.
+        createdAt:
+          type: string
+          format: date-time
+          description: The time when the category was created
+          example: "2021-06-24T15:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The last time the category was updated
+          example: "2021-06-24T16:00:00Z"
+paths:
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get a paginated and filtered list of categories
+      description: Returns categories with optional filtering by name and pagination.
+      operationId: getCategories
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter categories by name starting with this string.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+          description: Number of categories per page.
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                  total:
+                    type: integer
+                    example: 57
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 20
+                  totalPages:
+                    type: integer
+                    example: 3
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by ID
+      description: This endpoint allows you to get detailed information about a category by its unique identifier.
+      operationId: getCategoryById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response — category found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category' 
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier of the category
+                  name:
+                    type: string
+                    description: The name of the category
+                  appearance:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                        description: The path to the category's icon
+                      color:
+                        type: string
+                        description: The color of the category in HEX format
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The time the category was created
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The time the category was last updated
+        '400':
+          description: Invalid category ID format
+        '404':
+          description: Category not found
+  /categories/{id}/subjects/names:
+    get:
+      tags:
+        - Categories
+      summary: Get a paginated and filtered list of subject names by category ID
+      description: Returns a list of subject names for the given category ID with optional filtering by name and pagination.
+      operationId: getSubjectNamesByCategoryId
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the category for which to retrieve subject names.
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter subjects name starting with this string.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+          description: Number of categories per page.
+      responses:
+        '200':
+          description: A paginated list of subject names
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+                  total:
+                    type: integer
+                    example: 2
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 20
+                  totalPages:
+                    type: integer
+                    example: 1
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
+        '404':
+          description: No subjects found for this category
+        '400':
+          description: Invalid category ID format
