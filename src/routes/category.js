@@ -13,7 +13,7 @@ router.get(
 router.post(
   '/',
   authMiddleware,           
-  restrictTo('student'),       
+  restrictTo('admin'),       
   asyncWrapper(categoryController.createCategory)
 );
 router.get(
