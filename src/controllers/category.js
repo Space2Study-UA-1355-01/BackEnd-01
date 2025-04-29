@@ -48,8 +48,21 @@ const getCategoryById = async (req, res) => {
   res.status(200).json(category);
 };
 
+const createCategory = async (req, res) => {
+  const { name, appearance } = req.body;
+
+  if (!name || !appearance?.icon || !appearance?.color) {
+    return res.status(400).json({ message: 'Name, icon, and color are required.' });
+  }
+
+  const newCategory = await categoryService.createCategory({ name, appearance });
+
+  res.status(201).json(newCategory);
+};
+
 module.exports = {
   getCategories,
   getSubjectNamesByCategoryId,
-  getCategoryById
+  getCategoryById,
+  createCategory
 };
