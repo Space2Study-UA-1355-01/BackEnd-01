@@ -15,6 +15,20 @@ const getSubjects = async (req, res) => {
   res.status(200).json(subjects);
 };
 
+const createSubject = async (req, res) => {
+  const subjectData = req.body;
+
+  if (!subjectData?.name || !subjectData?.category) {
+    return res.status(400).json({ message: 'Name and category are required.' });
+  }
+
+  const newSubject = await subjectService.createSubject(subjectData);
+
+  res.status(201).json(newSubject);
+};
+
+
 module.exports = {
   getSubjects,
+  createSubject,
 };
