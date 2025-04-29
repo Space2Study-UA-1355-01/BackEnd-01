@@ -147,33 +147,33 @@ paths:
                   _id:
                     type: string
                     description: The unique identifier of the subject
-                    example: 680ab9772c70938761edda5e
+                    example: "680ab9772c70938761edda5e"
                   name:
                     type: string
                     description: The name of the subject
-                    example: JavaScript
+                    example: "JavaScript"
                   category:
                     type: object
                     properties:
                       _id:
                         type: string
                         description: The ID of the category
-                        example: 680ab9772c70938761edda5e
+                        example: "680ab9772c70938761edda5e"
                       name:
                         type: string
                         description: The name of the category
-                        example: IT
+                        example: "IT"
                       appearance:
                         type: object
                         properties:
                           icon:
                             type: string
                             description: The path to the category's icon
-                            example: icons/design.svg
+                            example: "icons/design.svg"
                           color:
                             type: string
                             description: The color of the category in HEX format
-                            example: #FF5733
+                            example: "#FF5733"
                   totalOffers:
                     type: object
                     properties:
@@ -225,7 +225,7 @@ paths:
               category:
                 type: string
                 description: The ID of the new category for the subject
-                example: 68081d3202a459c8915433c7
+                example: "68081d3202a459c8915433c7"
             additionalProperties: false
     responses:
       '200':
@@ -238,33 +238,33 @@ paths:
                 _id:
                   type: string
                   description: The unique identifier of the updated subject
-                  example: 680aba16c2b544ce98e8d35b
+                  example: "680aba16c2b544ce98e8d35b"
                 name:
                   type: string
                   description: The updated name of the subject
-                  example: Frontend
+                  example: "Frontend"
                 category:
                   type: object
                   properties:
                     _id:
                       type: string
                       description: The ID of the category
-                      example: 680aba16c2b544ce98e8d35b
+                      example: "680aba16c2b544ce98e8d35b"
                     name:
                       type: string
                       description: The name of the category
-                      example: IT
+                      example: "IT"
                     appearance:
                       type: object
                       properties:
                         icon:
                           type: string
                           description: The path to the category's icon
-                          example: icons/design.svg
+                          example: "icons/design.svg"
                         color:
                           type: string
                           description: The color of the category in HEX format
-                          example: #FF5733
+                          example: "#FF5733"
                 totalOffers:
                   type: object
                   properties:
