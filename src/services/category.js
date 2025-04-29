@@ -88,7 +88,7 @@ const categoryService = {
       Category.find(query)
         .skip(skip)
         .limit(limit)
-        .select('name')
+        .select('id name')
         .lean()
         .exec(),
       Category.countDocuments(query)
@@ -100,12 +100,8 @@ const categoryService = {
       throw error;
     }
   
-    const names = categories.map(category => ({
-      name: category.name
-    }));
-  
     return {
-      data: names,
+      data: categories,
       total,
       page,
       limit,
