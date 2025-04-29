@@ -147,27 +147,42 @@ paths:
                   _id:
                     type: string
                     description: The unique identifier of the subject
+                    example: 680ab9772c70938761edda5e
                   name:
                     type: string
                     description: The name of the subject
+                    example: JavaScript
                   category:
                     type: object
                     properties:
                       _id:
                         type: string
                         description: The ID of the category
+                        example: 680ab9772c70938761edda5e
                       name:
                         type: string
                         description: The name of the category
+                        example: IT
                       appearance:
                         type: object
                         properties:
                           icon:
                             type: string
                             description: The path to the category's icon
+                            example: icons/design.svg
                           color:
                             type: string
                             description: The color of the category in HEX format
+                            example: #FF5733
+                  totalOffers:
+                    type: object
+                    properties:
+                      student:
+                        type: integer
+                        description: Total student offers for the subject
+                      tutor:
+                        type: integer
+                        description: Total tutor offers for the subject
                   createdAt:
                     type: string
                     format: date-time
@@ -180,3 +195,96 @@ paths:
           description: Invalid subject ID format
         '404':
           description: Subject not found
+/subjects/{id}:
+  patch:
+    tags:
+      - Subjects
+    summary: Update a subject
+    description: This endpoint allows you to update an existing subject by its unique identifier. Only the `name` and `category` fields are allowed to be updated.
+    operationId: updateSubjectById
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: The unique identifier of the subject
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The new name of the subject
+                example: "Advanced JavaScript"
+              category:
+                type: string
+                description: The ID of the new category for the subject
+                example: 68081d3202a459c8915433c7
+            additionalProperties: false
+    responses:
+      '200':
+        description: Successful response — subject updated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  description: The unique identifier of the updated subject
+                  example: 680aba16c2b544ce98e8d35b
+                name:
+                  type: string
+                  description: The updated name of the subject
+                  example: Frontend
+                category:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: The ID of the category
+                      example: 680aba16c2b544ce98e8d35b
+                    name:
+                      type: string
+                      description: The name of the category
+                      example: IT
+                    appearance:
+                      type: object
+                      properties:
+                        icon:
+                          type: string
+                          description: The path to the category's icon
+                          example: icons/design.svg
+                        color:
+                          type: string
+                          description: The color of the category in HEX format
+                          example: #FF5733
+                totalOffers:
+                  type: object
+                  properties:
+                    student:
+                      type: integer
+                      description: Total student offers for the subject
+                    tutor:
+                      type: integer
+                      description: Total tutor offers for the subject
+                createdAt:
+                  type: string
+                  format: date-time
+                  description: The time the subject was created
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The time the subject was last updated
+      '400':
+        description: Invalid subject or category ID format
+      '404':
+        description: Subject or category not found
+      '500':
+        description: Internal server error

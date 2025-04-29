@@ -18,4 +18,10 @@ router.get(
   asyncWrapper(subjectController.getSubjectById)
 );
 
+router.patch(
+  '/:id',
+  authMiddleware,
+  restrictTo('student'),
+  asyncWrapper(subjectController.updateSubject)
+);
 module.exports = router;

@@ -1,4 +1,5 @@
 const Subject = require('~/models/subject');
+const { validateCategoryOnUpdate } = require('~/validation/services/subject')
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
@@ -43,6 +44,28 @@ const subjectService = {
     }
 
     return subject;
+  },
+
+  updateSubject: async (subjectId, updateData) => {
+    const subject = await Subject.findById(subjectId);
+
+    if (!subject) {
+      const error = new Error('Subject not found.');
+      error.status = 404;
+      throw error;
+    }
+
+    const validatedData = await validateCategoryOnUpdate(updateData);
+
+    const updatedSubject = await Subject.findByIdAndUpdate(subjectId, validatedData, {
+      new: true,
+      runValidators: true
+    })
+      .populate('category', 'name appearance')
+      .lean()
+      .exec();
+  
+    return updatedSubject;
   }
 };
 

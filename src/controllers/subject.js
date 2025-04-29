@@ -28,7 +28,21 @@ const getSubjectById = async (req, res) => {
   res.status(200).json(subject);
 };
 
+const updateSubject = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid subject ID format.' });
+  }
+
+  const updatedSubject = await subjectService.updateSubject(id, updates);
+
+  res.status(200).json(updatedSubject);
+};
+
 module.exports = {
   getSubjects,
   getSubjectById,
+  updateSubject,
 };
