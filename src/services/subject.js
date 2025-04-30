@@ -1,5 +1,9 @@
 const Subject = require('~/models/subject');
+<<<<<<< HEAD
 const { validateCategoryOnUpdate } = require('~/validation/services/subject')
+=======
+const { validateSubjectOnCreate } = require('~/validation/services/subject');
+>>>>>>> develop
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
@@ -28,6 +32,24 @@ const subjectService = {
       limit,
       totalPages: Math.ceil(total / limit)
     };
+  },
+
+  createSubject: async (subjectData) => {
+    try {
+      const validatedData = await validateSubjectOnCreate(subjectData);
+  
+      const newSubject = new Subject(validatedData);
+      await newSubject.save();
+  
+      return newSubject.toObject();
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        const error = new Error('Validation failed: ' + err.message);
+        error.status = 400;
+        throw error;
+      }
+      throw err;
+    }
   },
 
   getSubjectById: async (subjectId) => {

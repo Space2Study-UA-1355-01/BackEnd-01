@@ -10,6 +10,12 @@ router.get(
   restrictTo('student', 'tutor'),
   asyncWrapper(subjectController.getSubjects)
 );
+router.post(
+  '/',
+  authMiddleware,
+  restrictTo('student'), 
+  asyncWrapper(subjectController.createSubject)
+);
 
 router.get(
   '/:id',
