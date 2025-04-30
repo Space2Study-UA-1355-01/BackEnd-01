@@ -17,4 +17,11 @@ router.post(
   asyncWrapper(subjectController.createSubject)
 );
 
+router.get(
+  '/:id',
+  authMiddleware,
+  restrictTo('student', 'tutor'),
+  asyncWrapper(subjectController.getSubjectById)
+);
+
 module.exports = router;

@@ -1,4 +1,5 @@
 const subjectService = require('~/services/subject');
+const mongoose = require('mongoose');
 
 const getSubjects = async (req, res) => {
   const { search = '', page = 1, limit = 20 } = req.query;
@@ -27,8 +28,20 @@ const createSubject = async (req, res) => {
   res.status(201).json(newSubject);
 };
 
+const getSubjectById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid subject ID format.' });
+  }
+
+  const subject = await subjectService.getSubjectById(id);
+
+  res.status(200).json(subject);
+};
 
 module.exports = {
   getSubjects,
+  getSubjectById,
   createSubject,
 };

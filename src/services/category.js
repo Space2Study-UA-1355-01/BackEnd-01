@@ -73,6 +73,63 @@ const categoryService = {
     }
   
     return category;
+  },
+
+  getCategoryNames: async ({ search = '', page = 1, limit = 20 } = {}) => {
+    const query = {};
+  
+    if (search) {
+      query.name = { $regex: `^${search}`, $options: 'i' };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [categories, total] = await Promise.all([
+      Category.find(query)
+        .skip(skip)
+        .limit(limit)
+        .select('id name')
+        .lean()
+        .exec(),
+      Category.countDocuments(query)
+    ]);
+
+    if (!categories.length) {
+      const error = new Error('Category not found.');
+      error.status = 404;
+      throw error;
+    }
+  
+    return {
+      data: categories,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
+  },
+
+  createCategory: async ({ name, appearance }) => {
+    try {
+      const existingCategory = await Category.findOne({ name }).exec();
+      if (existingCategory) {
+        const error = new Error('Category with this name already exists.');
+        error.status = 409; 
+        throw error;
+      }
+
+      const newCategory = new Category({ name, appearance });
+      await newCategory.save();
+
+      return newCategory.toObject();
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        const error = new Error('Validation failed: ' + err.message);
+        error.status = 400;
+        throw error;
+      }
+      throw err;
+    }
   }
   
 };

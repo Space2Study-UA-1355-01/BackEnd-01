@@ -120,3 +120,123 @@ paths:
           description: Unauthorized – JWT token is missing or invalid
         '403':
           description: Forbidden – User doesn't have access
+    post:
+      summary: Create a new subject
+      tags:
+        - Subjects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+              properties:
+                name:
+                  type: string
+                  example: JavaScript
+                  description: Name of the subject.
+                category:
+                  type: string
+                  example: 68081d3202a459c8915433c7
+                  description: ID of an existing category.
+      responses:
+        '201':
+          description: Successfully created subject
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: ID of the created subject
+                  name:
+                    type: string
+                  category:
+                    type: string
+                    example: 68081d3202a459c8915433c7
+                    description: ID of the category
+                  totalOffers:
+                    type: object
+                    properties:
+                      student:
+                        type: integer
+                        example: 0
+                      tutor:
+                        type: integer
+                        example: 0
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Validation error or incorrect input
+        '404':
+          description: Category not found
+        '409':
+          description: Subject with this name already exists
+  /subjects/{id}:
+    get:
+      tags:
+        - Subjects
+      summary: Get subject by ID
+      description: This endpoint allows you to get detailed information about a subject by its unique identifier.
+      operationId: getSubjectById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the subject
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response — subject found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier of the subject
+                  name:
+                    type: string
+                    description: The name of the subject
+                  category:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The ID of the category
+                      name:
+                        type: string
+                        description: The name of the category
+                      appearance:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                            description: The path to the category's icon
+                          color:
+                            type: string
+                            description: The color of the category in HEX format
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was created
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was last updated
+        '400':
+          description: Invalid subject ID format
+        '404':
+          description: Subject not found

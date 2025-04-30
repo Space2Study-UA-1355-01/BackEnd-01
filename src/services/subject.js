@@ -46,6 +46,22 @@ const subjectService = {
       }
       throw err;
     }
+  },
+
+  getSubjectById: async (subjectId) => {
+
+    const subject = await Subject.findById(subjectId)
+      .populate('category', 'name appearance')
+      .lean()
+      .exec();
+
+    if (!subject) {
+      const error = new Error('Subject not found.');
+      error.status = 404;
+      throw error;
+    }
+
+    return subject;
   }
 };
 
