@@ -13,7 +13,7 @@ router.get(
 router.post(
   '/',
   authMiddleware,
-  restrictTo('student'), 
+  restrictTo('admin'), 
   asyncWrapper(subjectController.createSubject)
 );
 
@@ -27,7 +27,14 @@ router.get(
 router.patch(
   '/:id',
   authMiddleware,
-  restrictTo('student'),
+  restrictTo('admin'),
   asyncWrapper(subjectController.updateSubject)
+);
+
+router.delete(
+  '/:id',
+  authMiddleware,
+  restrictTo('admin'),
+  asyncWrapper(subjectController.deleteSubject)
 );
 module.exports = router;
