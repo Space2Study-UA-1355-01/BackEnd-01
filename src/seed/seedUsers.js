@@ -1,4 +1,5 @@
 const User = require('~/models/user');
+const bcrypt = require('bcrypt');
 const {
   roles: { STUDENT, TUTOR, ADMIN }
 } = require('~/consts/auth'); 
@@ -12,12 +13,15 @@ const SeedUsers = {
       const isAdminExist = await User.exists({ role: ADMIN });
 
       if (!isStudentExist) {
+        const studentPassword = 'studentqweR123!';
+        const hashedStudentPassword = await bcrypt.hash(studentPassword, 10);
+
         const student = {
           role: STUDENT,
           firstName: 'Student',
           lastName: 'Test',
           email: 'student@example.com',
-          password: 'studentqweR123!',
+          password: hashedStudentPassword,
           active: true,
           isEmailConfirmed: true
         };
@@ -26,12 +30,15 @@ const SeedUsers = {
       }
 
       if (!isTutorExist) {
+        const tutorPassword = 'tutorqweR123!';
+        const hashedTutorPassword = await bcrypt.hash(tutorPassword, 10);
+
         const tutor = {
           role: TUTOR,
           firstName: 'Tutor',
           lastName: 'test',
           email: 'tutor@example.com',
-          password: 'tutorqweR123!',
+          password: hashedTutorPassword,
           active: true,
           isEmailConfirmed: true
         };
@@ -40,12 +47,15 @@ const SeedUsers = {
       }
 
       if (!isAdminExist) {
+        const adminPassword = 'adminqweR123!';
+        const hashedAdminPassword = await bcrypt.hash(adminPassword, 10);
+
         const admin = {
           role: ADMIN,
           firstName: 'Admin',
           lastName: 'User',
           email: 'admin@example.com',
-          password: 'adminqweR123!',
+          password: hashedAdminPassword,
           active: true,
           isEmailConfirmed: true
         };
