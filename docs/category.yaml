@@ -343,6 +343,7 @@ paths:
           application/json:
             schema:
               type: object
+
               properties:
                 data:
                   type: array

@@ -16,6 +16,18 @@ const getSubjects = async (req, res) => {
   res.status(200).json(subjects);
 };
 
+const createSubject = async (req, res) => {
+  const subjectData = req.body;
+
+  if (!subjectData?.name || !subjectData?.category) {
+    return res.status(400).json({ message: 'Name and category are required.' });
+  }
+
+  const newSubject = await subjectService.createSubject(subjectData);
+
+  res.status(201).json(newSubject);
+};
+
 const getSubjectById = async (req, res) => {
   const { id } = req.params;
 
@@ -31,4 +43,5 @@ const getSubjectById = async (req, res) => {
 module.exports = {
   getSubjects,
   getSubjectById,
+  createSubject,
 };
