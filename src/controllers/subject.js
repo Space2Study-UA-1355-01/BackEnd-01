@@ -40,8 +40,26 @@ const getSubjectById = async (req, res) => {
   res.status(200).json(subject);
 };
 
+const updateSubject = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid subject ID format.' });
+  }
+
+  if (!updates || Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: 'No updates provided.' });
+  }
+
+  const updatedSubject = await subjectService.updateSubject(id, updates);
+
+  res.status(200).json(updatedSubject);
+};
+
 module.exports = {
   getSubjects,
   getSubjectById,
+  updateSubject,
   createSubject,
 };
