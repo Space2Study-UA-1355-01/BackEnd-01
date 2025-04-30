@@ -1,6 +1,5 @@
 const Subject = require('~/models/subject');
-const Category = require('~/models/category');
-const mongoose = require('mongoose');
+const { validateSubjectOnCreate } = require('~/validation/services/subject');
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
@@ -33,27 +32,9 @@ const subjectService = {
 
   createSubject: async (subjectData) => {
     try {
-      if (!mongoose.Types.ObjectId.isValid(subjectData.category)) {
-        const error = new Error('Invalid category ID.');
-        error.status = 400;
-        throw error;
-      }
+      const validatedData = await validateSubjectOnCreate(subjectData);
   
-      const existingCategory = await Category.findById(subjectData.category).exec();
-      if (!existingCategory) {
-        const error = new Error('Category not found.');
-        error.status = 404;
-        throw error;
-      }
-
-      const existingSubject = await Subject.findOne({ name: subjectData.name }).exec();
-      if (existingSubject) {
-        const error = new Error('Subject with this name already exists.');
-        error.status = 409;
-        throw error;
-      }
-  
-      const newSubject = new Subject(subjectData);
+      const newSubject = new Subject(validatedData);
       await newSubject.save();
   
       return newSubject.toObject();
