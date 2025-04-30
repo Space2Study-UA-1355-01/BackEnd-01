@@ -38,7 +38,7 @@ const categoryService = {
       Subject.find(query)
         .skip(skip)
         .limit(limit)
-        .select('name')
+        .select('id name')
         .lean()
         .exec(),
       Subject.countDocuments(query)
@@ -50,12 +50,8 @@ const categoryService = {
       throw error;
     }
   
-    const subjectNames = subjects.map(subject => ({
-      name: subject.name
-    }));
-  
     return {
-      data: subjectNames,
+      data: subjects,
       total,
       page,
       limit,
@@ -73,6 +69,40 @@ const categoryService = {
     }
   
     return category;
+  },
+
+  getCategoryNames: async ({ search = '', page = 1, limit = 20 } = {}) => {
+    const query = {};
+  
+    if (search) {
+      query.name = { $regex: `^${search}`, $options: 'i' };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [categories, total] = await Promise.all([
+      Category.find(query)
+        .skip(skip)
+        .limit(limit)
+        .select('id name')
+        .lean()
+        .exec(),
+      Category.countDocuments(query)
+    ]);
+
+    if (!categories.length) {
+      const error = new Error('Category not found.');
+      error.status = 404;
+      throw error;
+    }
+  
+    return {
+      data: categories,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   },
 
   createCategory: async ({ name, appearance }) => {

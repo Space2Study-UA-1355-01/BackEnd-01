@@ -17,6 +17,12 @@ router.post(
   asyncWrapper(categoryController.createCategory)
 );
 router.get(
+  '/names',
+  authMiddleware,
+  restrictTo('student', 'tutor'),
+  asyncWrapper(categoryController.getCategoryNames)
+);
+router.get(
   '/:id/subjects/names',
   authMiddleware,
   restrictTo('student', 'tutor'),
