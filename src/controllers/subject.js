@@ -36,6 +36,10 @@ const updateSubject = async (req, res) => {
     return res.status(400).json({ message: 'Invalid subject ID format.' });
   }
 
+  if (!updates || Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: 'No updates provided.' });
+  }
+
   const updatedSubject = await subjectService.updateSubject(id, updates);
 
   res.status(200).json(updatedSubject);

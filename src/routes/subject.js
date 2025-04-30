@@ -21,7 +21,7 @@ router.get(
 router.patch(
   '/:id',
   authMiddleware,
-  restrictTo('admin'),
+  restrictTo('student'),
   asyncWrapper(subjectController.updateSubject)
 );
 module.exports = router;

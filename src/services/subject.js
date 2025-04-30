@@ -55,7 +55,7 @@ const subjectService = {
       throw error;
     }
 
-    const validatedData = await validateCategoryOnUpdate(updateData);
+    const validatedData = await validateCategoryOnUpdate(subjectId, updateData);
 
     const updatedSubject = await Subject.findByIdAndUpdate(subjectId, validatedData, {
       new: true,

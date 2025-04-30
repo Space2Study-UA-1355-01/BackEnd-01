@@ -283,8 +283,18 @@ paths:
                   format: date-time
                   description: The time the subject was last updated
       '400':
-        description: Invalid subject or category ID format
+        description: |
+          Bad Request:
+          - Invalid subject or category ID format
+          - Name is required and must be a non-empty string
+          - Name must be between 2 and 50 characters
+          - No updates provided
       '404':
-        description: Subject or category not found
-      '500':
-        description: Internal server error
+        description: |
+          Not Found:
+          - Subject not found
+          - Category not found
+      '409':
+        description: |
+          Conflict:
+          - Subject with this name already exists
