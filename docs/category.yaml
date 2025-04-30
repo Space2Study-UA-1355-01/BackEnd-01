@@ -283,10 +283,19 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Subject'
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 680aba16c2b544ce98e8d35b
+                          description: Subject ID
+                        name:
+                          type: string
+                          example: JavaScript
+                          description: Subject name
                   total:
                     type: integer
-                    example: 2
+                    example: 1
                   page:
                     type: integer
                     example: 1
