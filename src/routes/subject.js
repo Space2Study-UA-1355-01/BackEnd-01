@@ -11,4 +11,11 @@ router.get(
   asyncWrapper(subjectController.getSubjects)
 );
 
+router.get(
+  '/:id',
+  authMiddleware,
+  restrictTo('student', 'tutor'),
+  asyncWrapper(subjectController.getSubjectById)
+);
+
 module.exports = router;

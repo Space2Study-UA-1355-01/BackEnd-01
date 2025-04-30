@@ -107,6 +107,29 @@ const categoryService = {
       limit,
       totalPages: Math.ceil(total / limit)
     };
+  },
+
+  createCategory: async ({ name, appearance }) => {
+    try {
+      const existingCategory = await Category.findOne({ name }).exec();
+      if (existingCategory) {
+        const error = new Error('Category with this name already exists.');
+        error.status = 409; 
+        throw error;
+      }
+
+      const newCategory = new Category({ name, appearance });
+      await newCategory.save();
+
+      return newCategory.toObject();
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        const error = new Error('Validation failed: ' + err.message);
+        error.status = 400;
+        throw error;
+      }
+      throw err;
+    }
   }
   
 };
