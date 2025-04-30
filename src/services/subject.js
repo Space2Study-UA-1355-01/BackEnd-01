@@ -1,9 +1,6 @@
 const Subject = require('~/models/subject');
-<<<<<<< HEAD
-const { validateCategoryOnUpdate } = require('~/validation/services/subject')
-=======
-const { validateSubjectOnCreate } = require('~/validation/services/subject');
->>>>>>> develop
+const { validateCategoryOnUpdate, validateSubjectOnCreate } = require('~/validation/services/subject')
+
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
