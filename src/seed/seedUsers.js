@@ -22,6 +22,7 @@ const SeedUsers = {
           lastName: 'Test',
           email: 'student@example.com',
           password: hashedStudentPassword,
+          lastLoginAs: STUDENT,
           active: true,
           isEmailConfirmed: true
         };
@@ -39,6 +40,7 @@ const SeedUsers = {
           lastName: 'test',
           email: 'tutor@example.com',
           password: hashedTutorPassword,
+          lastLoginAs: TUTOR,
           active: true,
           isEmailConfirmed: true
         };
@@ -56,6 +58,7 @@ const SeedUsers = {
           lastName: 'User',
           email: 'admin@example.com',
           password: hashedAdminPassword,
+          lastLoginAs: ADMIN,
           active: true,
           isEmailConfirmed: true
         };

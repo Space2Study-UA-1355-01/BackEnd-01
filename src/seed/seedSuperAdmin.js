@@ -1,18 +1,22 @@
 const User = require('~/models/user')
 const {
-  roles: { SUPERADMIN }
+  roles: { SUPERADMIN, ADMIN }
 } = require('~/consts/auth')
 const logger = require('~/logger/logger')
+const bcrypt = require('bcrypt');
 
 const SeedSuperAdmin = {
   createSuperAdmin: async () => {
+    const studentPassword = process.env.MAIL_PASS;
+            const hashedStudentPassword = await bcrypt.hash(studentPassword, 10);
     try {
       const superAdmin = {
         role: SUPERADMIN,
         firstName: process.env.MAIL_FIRSTNAME,
         lastName: process.env.MAIL_LASTNAME,
         email: process.env.MAIL_USER,
-        password: process.env.MAIL_PASS,
+        password: hashedStudentPassword,
+        lastLoginAs: ADMIN,
         active: true,
         isEmailConfirmed: true
       }
