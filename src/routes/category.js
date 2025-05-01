@@ -34,4 +34,10 @@ router.get(
   restrictTo('student', 'tutor'), 
   asyncWrapper(categoryController.getCategoryById)
 );
+router.get(
+  '/:id/subjects',
+  authMiddleware,
+  restrictTo('student', 'tutor'),
+  asyncWrapper(categoryController.getSubjectsByCategoryId)
+);
 module.exports = router
