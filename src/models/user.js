@@ -84,13 +84,17 @@ const userSchema = new Schema(
       }
     },
     nativeLanguage: {
-      type: String,
-      enum: {
-        values: SPOKEN_LANG_ENUM,
-        message: ENUM_CAN_BE_ONE_OF('native language', SPOKEN_LANG_ENUM)
+      type: [String],
+      validate: {
+        validator: function (langs) {
+          return (
+            Array.isArray(langs) && langs.every((lang) => SPOKEN_LANG_ENUM.includes(lang))
+          )
+        },
+        message: ENUM_CAN_BE_ONE_OF('native Language', SPOKEN_LANG_ENUM)
       },
-      default: "English"
-    },    
+      default: []
+    },
     isEmailConfirmed: {
       type: Boolean,
       default: false,
