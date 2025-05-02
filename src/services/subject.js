@@ -85,6 +85,18 @@ const subjectService = {
       .exec();
   
     return updatedSubject;
+  },
+
+  deleteSubject: async (subjectId) => {
+    const subject = await Subject.findById(subjectId);
+  
+    if (!subject) {
+      const error = new Error('Subject not found.');
+      error.status = 404;
+      throw error;
+    }
+  
+    await Subject.findByIdAndDelete(subjectId);
   }
 };
 
