@@ -180,6 +180,40 @@ paths:
           description: Category not found
         '409':
           description: Subject with this name already exists
+    delete:
+      tags:
+        - Subjects
+      summary: Delete a subject by ID
+      description: Deletes a subject identified by its unique ID.
+      operationId: deleteSubject
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the subject to delete.
+      responses:
+        '200':
+          description: Subject successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Subject successfully deleted
+        '400':
+          description: Bad Request – Invalid ID supplied
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
+        '404':
+          description: Not Found – Subject not found
   /subjects/{id}:
     get:
       tags:

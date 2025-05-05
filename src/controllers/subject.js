@@ -57,9 +57,22 @@ const updateSubject = async (req, res) => {
   res.status(200).json(updatedSubject);
 };
 
+const deleteSubject = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid subject ID format.' });
+  }
+
+  await subjectService.deleteSubject(id);
+
+  res.status(200).json({ message: 'Subject successfully deleted.' });
+};
+
 module.exports = {
   getSubjects,
   getSubjectById,
   updateSubject,
   createSubject,
+  deleteSubject,
 };
