@@ -33,6 +33,9 @@ components:
               type: string
               example: "#66C42C"
               description: Color of the category icon. Defaults to '#66C42C'.
+        totalOffers:
+          type: integer
+          example: 10
         createdAt:
           type: string
           format: date-time
