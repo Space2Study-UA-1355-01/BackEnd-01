@@ -126,7 +126,41 @@ const categoryService = {
       }
       throw err;
     }
-  }
+  },
+
+  getSubjectsByCategoryId: async (categoryId, { search = '', page = 1, limit = 20 } = {}) => {
+    const query = { category: categoryId };
+  
+    if (search) {
+      query.name = { $regex: `^${search}`, $options: 'i' };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [subjects, total] = await Promise.all([
+      Subject.find(query)
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .populate('category', 'name appearance')
+        .exec(),
+      Subject.countDocuments(query)
+    ]);
+
+    if (subjects.length === 0) {
+      const error = new Error('No subjects found for this category.');
+      error.status = 404;
+      throw error;
+    }
+  
+    return {
+      data: subjects,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
+  },
   
 };
 
