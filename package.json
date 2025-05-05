@@ -9,7 +9,9 @@
     "lint": "eslint . --fix",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "generate:secrets": "node generateSecrets.js"
+    "generate:secrets": "node generateSecrets.js",
+    "seed": "node src/seed/index.js",
+    "seed:drop": "node src/seed/index.js --drop"
   },
   "author": "SoftServe ITA",
   "license": "ISC",
@@ -52,5 +54,8 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "_moduleAliases": {
+    "~": "src"
   }
 }
