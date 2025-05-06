@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const { FIELD_CANNOT_BE_EMPTY } = require('~/consts/errors');
 
 const {
   enums: { MAIN_ROLE_ENUM, SPOKEN_LANG_ENUM, PROFICIENCY_LEVEL_ENUM, OFFER_STATUS_ENUM }
@@ -84,7 +85,7 @@ const offerSchema = new Schema(
           },
           answer: {
             type: String,
-            required: [true, FIELD_CANNOT_BE_EMPTY('FAQ-anwer')],
+            required: [true, FIELD_CANNOT_BE_EMPTY('FAQ-answer')],
             trim: true
           }
         }
