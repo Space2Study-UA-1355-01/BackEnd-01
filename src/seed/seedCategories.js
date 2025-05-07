@@ -8,36 +8,36 @@ const SeedCategories = {
         {
           name: 'Design',
           appearance: {
-            icon: 'icons/design.svg',
-            color: '#FF5733'
+            icon: '#bc9d06',
+            color: '#d8cb8d'
           }
         },
         {
           name: 'Mathematics',
           appearance: {
-            icon: 'icons/mathematics.svg',
-            color: '#3498db'
+            icon: '#2c7b19',
+            color: '#9cd88d'
           }
         },
         {
           name: 'Programming',
           appearance: {
-            icon: 'icons/programming.svg',
-            color: '#2ecc71'
+            icon: '#194b7b',
+            color: '#8baccb'
           }
         },
         {
           name: 'Marketing',
           appearance: {
-            icon: 'icons/marketing.svg',
-            color: '#f1c40f'
+            icon: '#9314a3',
+            color: '#dbb9df'
           }
         },
         {
           name: 'Finance',
           appearance: {
-            icon: 'icons/finance.svg',
-            color: '#9b59b6'
+            icon: '#a31444',
+            color: '#dca3b6'
           }
         }
       ];
