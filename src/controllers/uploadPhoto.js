@@ -34,7 +34,7 @@ const uploadController = async (req, res) => {
 
     const userId = req.user.id
     const result = await uploadImage(req.file.buffer, userId)
-    await User.findByIdAndUpdate(userId, { photo: result.public_id })
+    await User.findByIdAndUpdate(userId, { photo: result.secure_url })
 
     res.status(200).json({
       message: 'Image uploaded successfully',
