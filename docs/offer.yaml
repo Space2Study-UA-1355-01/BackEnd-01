@@ -248,7 +248,138 @@ paths:
           description: Bad request
         '500':
           description: Server error
-  paths:
+    post:
+      summary: Create a new offer
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - price
+                - proficiencyLevel
+                - title
+                - description
+                - languages
+                - category
+                - subject
+              properties:
+                price:
+                  type: number
+                  example: 50
+                  description: Price of the offer.
+                proficiencyLevel:
+                  type: string
+                  enum: [Beginner, Intermediate, Advanced]
+                  example: Beginner
+                  description: Proficiency level required.
+                title:
+                  type: string
+                  example: UX/UI Design Basics
+                  description: Title of the offer.
+                description:
+                  type: string
+                  example: Learn the fundamentals of UX/UI design.
+                  description: Detailed description of the offer.
+                languages:
+                  type: array
+                  items:
+                    type: string
+                    enum: [English, Ukrainian, Polish, German, French, Spanish, Arabic]
+                  example: ["English", "Ukrainian"]
+                  description: Languages in which the offer is available.
+                category:
+                  type: string
+                  example: 681c8bd8b89512256461f270
+                  description: ID of the category.
+                subject:
+                  type: string
+                  example: 681c8bd8b89512256461f280
+                  description: ID of the subject.
+                status:
+                  type: string
+                  enum: [active, hidden, archived]
+                  example: active
+                  description: Status of the offer.
+                FAQ:
+                  type: array
+                  description: List of frequently asked questions.
+                  items:
+                    type: object
+                    required:
+                      - question
+                      - answer
+                    properties:
+                      question:
+                        type: string
+                        example: Is prior experience needed?
+                      answer:
+                        type: string
+                        example: No, this course is suitable for beginners.
+      responses:
+        '201':
+          description: Offer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: "681caa53d986f0bb2eb61f69"
+                  price:
+                    type: number
+                    example: 50
+                  proficiencyLevel:
+                    type: string
+                    example: Beginner
+                  title:
+                    type: string
+                    example: "UX/UI Design Basics"
+                  description:
+                    type: string
+                    example: "Learn the fundamentals of UX/UI design."
+                  languages:
+                    type: array
+                    items:
+                      type: string
+                    example: ["English", "Ukrainian"]
+                  authorRole:
+                    type: string
+                    example: student
+                  author:
+                    type: string
+                    example: "681c8bd7b89512256461f269"
+                  category:
+                    type: string
+                    example: "681c8bd8b89512256461f270"
+                  subject:
+                    type: string
+                    example: "681c8bd8b89512256461f280"
+                  status:
+                    type: string
+                    example: active
+                  FAQ:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FAQItem'
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '409':
+          description: Validation error
   /offers/{id}:
     get:
       summary: Get an offer by ID
