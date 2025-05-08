@@ -16,8 +16,13 @@ const categoryService = {
       Category.countDocuments(query)
     ]);
 
+    const categoriesWithOffers = categories.map(category => ({
+      ...category,
+      totalOffers: 10
+    }));
+
     return {
-      data: categories,
+      data: categoriesWithOffers,
       total,
       page,
       limit,
@@ -68,7 +73,10 @@ const categoryService = {
       throw error;
     }
   
-    return category;
+    return {
+      ...category,
+      totalOffers: 10
+    };
   },
 
   getCategoryNames: async ({ search = '', page = 1, limit = 20 } = {}) => {
