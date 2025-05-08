@@ -506,3 +506,102 @@ paths:
           description: Offer not found
         '500':
           description: Internal server error
+    patch:
+      summary: Update an existing offer
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the offer to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                  example: 60
+                  description: Updated price of the offer
+                proficiencyLevel:
+                  type: string
+                  example: Beginner
+                  description: Updated proficiency level
+                title:
+                  type: string
+                  example: Updated UX/UI Design Course
+                  description: Updated title of the offer
+                description:
+                  type: string
+                  example: Now includes bonus Figma lessons.
+                  description: Updated offer description
+                languages:
+                  type: array
+                  items:
+                    type: string
+                  example: ["English", "Polish"]
+                  description: Updated list of spoken languages
+                subject:
+                  type: string
+                  example: 681c8bd8b89512256461f280
+                  description: ID of the updated subject
+                category:
+                  type: string
+                  example: 681c8bd8b89512256461f270
+                  description: ID of the updated category
+                status:
+                  type: string
+                  example: active
+                  description: Updated offer status
+                FAQ:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question:
+                        type: string
+                        example: Are Figma lessons included?
+                      answer:
+                        type: string
+                        example: Yes, Figma basics are covered.
+      responses:
+        '204':
+          description: Offer updated successfully. No content in the response.
+        '400':
+          description: Bad request (validation error)
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '403':
+          description: Forbidden (you are not the author of the offer)
+        '404':
+          description: Offer not found
+    delete:
+      summary: "Delete an offer"
+      description: "Deletes the offer with the specified ID."
+      operationId: "deleteOffer"
+      tags:
+        - "Offers"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the offer to delete"
+          schema:
+            type: string
+            example: "681c8bd8b89512256461f29f"
+      responses:
+        '204':
+          description: The offer was successfully deleted. No content in the response.
+        '401':
+          description: Unauthorized request (missing or invalid token)
+        '403':
+          description: Forbidden (you are not the author of the offer)
+        '404':
+          description: Offer not found
