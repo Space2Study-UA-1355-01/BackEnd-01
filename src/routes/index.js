@@ -24,6 +24,6 @@ router.use('/categories', category)
 router.use('/countries', country)
 router.use('/upload', uploadRoutes)
 router.use('/subjects', subject)
-app.use('/api/languages', languageRoutes);
+router.use('/api/languages', languageRoutes);
 
 module.exports = router
