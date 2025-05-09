@@ -11,6 +11,7 @@ const category = require('~/routes/category')
 const country = require('~/routes/countries')
 const uploadRoutes = require('~/routes/uploadPhoto')
 const subject = require('~/routes/subject')
+const languageRoutes = require('./routes/languageRoutes');
 
 router.use('/auth', auth)
 router.use('/users', user)
@@ -23,5 +24,6 @@ router.use('/categories', category)
 router.use('/countries', country)
 router.use('/upload', uploadRoutes)
 router.use('/subjects', subject)
+app.use('/api/languages', languageRoutes);
 
 module.exports = router
