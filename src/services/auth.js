@@ -1,3 +1,5 @@
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client(process.env.GMAIL_CLIENT_ID)
 const tokenService = require('~/services/token')
 const emailService = require('~/services/email')
 const { getUserByEmail, createUser, privateUpdateUser, getUserById } = require('~/services/user')
@@ -16,9 +18,12 @@ const emailSubject = require('~/consts/emailSubject')
 const {
   tokenNames: { REFRESH_TOKEN, RESET_TOKEN, CONFIRM_TOKEN }
 } = require('~/consts/auth')
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const SALT_ROUNDS = 10
+if (!process.env.GMAIL_CLIENT_ID) {
+  throw new Error('GMAIL_CLIENT_ID environment variable is required');
+}
 
 const authService = {
   signup: async (role, firstName, lastName, email, password, language) => {
@@ -41,7 +46,7 @@ const authService = {
       throw createError(401, USER_NOT_FOUND)
     }
 
-    const checkedPassword = isFromGoogle || await bcrypt.compare(password, user.password)
+    const checkedPassword = isFromGoogle || (await bcrypt.compare(password, user.password))
 
     if (!checkedPassword) {
       throw createError(401, INCORRECT_CREDENTIALS)
@@ -121,27 +126,62 @@ const authService = {
 
   confirmEmail: async (confirmToken) => {
     if (!confirmToken) {
-      throw createError(400, BAD_CONFIRM_TOKEN);
+      throw createError(400, BAD_CONFIRM_TOKEN)
     }
-  
-    const tokenData = jwt.verify(confirmToken, process.env.JWT_CONFIRM_SECRET);
-  
+
+    const tokenData = jwt.verify(confirmToken, process.env.JWT_CONFIRM_SECRET)
+
     if (!tokenData || !tokenData.id) {
-      throw createError(400, BAD_CONFIRM_TOKEN);
+      throw createError(400, BAD_CONFIRM_TOKEN)
     }
-  
-    const user = await getUserById(tokenData.id);
+
+    const user = await getUserById(tokenData.id)
     if (!user) {
-      throw createError(400, BAD_CONFIRM_TOKEN);
+      throw createError(400, BAD_CONFIRM_TOKEN)
     }
-  
+
     if (user.isEmailConfirmed == true) {
-      throw createError(400, EMAIL_ALREADY_CONFIRMED);
+      throw createError(400, EMAIL_ALREADY_CONFIRMED)
     }
-  
-    await privateUpdateUser(user._id, { isEmailConfirmed: true });
-    return { message: 'Email successfully confirmed' };
+
+    await privateUpdateUser(user._id, { isEmailConfirmed: true })
+    return { message: 'Email successfully confirmed' }
   }
+}
+
+async function verifyGoogleToken(idToken) {
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GMAIL_CLIENT_ID
+    })
+    const payload = ticket.getPayload()
+    return {
+      email: payload.email,
+      firstName: payload.given_name || '',
+      lastName: payload.family_name || '',
+      avatar: payload.picture || '',
+      sub: payload.sub
+    }
+  } catch (error) {
+    throw createError(401, 'Invalid Google token')
+  }
+}
+
+authService.loginWithGoogle = async (idToken) => {
+  const googleUser = await verifyGoogleToken(idToken)
+
+  let user = await getUserByEmail(googleUser.email)
+
+  if (!user) {
+    user = await createUser('user', googleUser.firstName, googleUser.lastName, googleUser.email, null, 'en', {
+      avatar: googleUser.avatar,
+      googleId: googleUser.sub,
+      isEmailConfirmed: true
+    })
+  }
+
+  return await authService.login(googleUser.email, null, true)
 }
 
 module.exports = authService

@@ -1,3 +1,4 @@
+const { OAuth2Client } = require('google-auth-library')
 const authService = require('~/services/auth')
 const { oneDayInMs } = require('~/consts/auth')
 const {
@@ -38,6 +39,38 @@ const login = async (req, res) => {
 
   res.status(200).json(tokens)
 }
+
+const loginWithGoogle = async (req, res, next) => {
+  try {
+    const { idToken } = req.body;
+    
+    if (!idToken) {
+      return res.status(400).json({ 
+        status: 400,
+        code: 'MISSING_TOKEN',
+        message: 'Google ID token is required' 
+      });
+    }
+
+    const tokens = await authService.loginWithGoogle(idToken);
+    
+    res.cookie(ACCESS_TOKEN, tokens.accessToken, COOKIE_OPTIONS);
+    res.cookie(REFRESH_TOKEN, tokens.refreshToken, COOKIE_OPTIONS);
+    
+    delete tokens.refreshToken;
+    res.status(200).json(tokens);
+  } catch (error) {
+    if (error.message === 'Invalid Gmail token') {
+      return res.status(401).json({
+        status: 401,
+        code: 'INVALID_GMAIL_TOKEN',
+        message: 'Invalid or expired Gmail token'
+      });
+    }
+    next(error);
+  }
+};
+
 
 const logout = async (req, res) => {
   const { refreshToken } = req.cookies
@@ -98,6 +131,7 @@ const confirmEmail = async (req, res) => {
 module.exports = {
   signup,
   login,
+  loginWithGoogle,
   logout,
   refreshAccessToken,
   sendResetPasswordEmail,
