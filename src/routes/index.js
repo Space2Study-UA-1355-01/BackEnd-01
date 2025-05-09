@@ -11,7 +11,7 @@ const category = require('~/routes/category')
 const country = require('~/routes/countries')
 const uploadRoutes = require('~/routes/uploadPhoto')
 const subject = require('~/routes/subject')
-const languageRoutes = require('./routes/languageRoutes');
+const languageRoutes = require('~/routes/languageRoutes');
 
 router.use('/auth', auth)
 router.use('/users', user)
