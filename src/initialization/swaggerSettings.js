@@ -14,7 +14,13 @@ const swaggerOptions = {
       }
     ],
     components: {
-      securitySchemes: {}
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
     }
   },
   apis: ['./docs/*.yaml']

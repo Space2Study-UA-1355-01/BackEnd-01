@@ -1,0 +1,394 @@
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Subject:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the subject
+          example: "60c72b2f5f9b2f1b32c87c2a"
+        name:
+          type: string
+          description: The name of the subject
+          example: "Math"
+        category:
+          type: string
+          description: The category ID to which the subject belongs (references a category)
+          example: "60c72b2f5f9b2f1b32c87c2b"
+        totalOffers:
+          type: object
+          properties:
+            student:
+              type: integer
+              description: The number of offers available for students in this subject
+              example: 100
+            tutor:
+              type: integer
+              description: The number of offers available for tutors in this subject
+              example: 25
+        createdAt:
+          type: string
+          format: date-time
+          description: The time when the subject was created
+          example: "2021-06-24T15:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The last time the subject was updated
+          example: "2021-06-24T16:00:00Z"
+
+paths:
+  /subjects:
+    get:
+      tags:
+        - Subjects
+      summary: Get a paginated and filtered list of subjects
+      description: Returns subjects with optional filtering by name and pagination.
+      operationId: getSubjects
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter subjects by name starting with this string.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number for pagination.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+          description: Number of subjects per page.
+      responses:
+        '200':
+          description: List of subjects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+                    example:
+                      - _id: "680aba16c2b544ce98e8d35b"
+                        name: "JavaScript"
+                        category:
+                          _id: "68081d3202a459c8915433c7"
+                          name: "Development"
+                          appearance:
+                            icon: "icons/dev.svg"
+                            color: "#66C42C"
+                        totalOffers:
+                          student: 0
+                          tutor: 0
+                        createdAt: "2025-04-24T22:24:22.404Z"
+                        updatedAt: "2025-04-24T22:24:22.404Z"
+                  total:
+                    type: integer
+                    example: 3
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 20
+                  totalPages:
+                    type: integer
+                    example: 1
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
+    post:
+      summary: Create a new subject
+      tags:
+        - Subjects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+              properties:
+                name:
+                  type: string
+                  example: JavaScript
+                  description: Name of the subject.
+                category:
+                  type: string
+                  example: 68081d3202a459c8915433c7
+                  description: ID of an existing category.
+      responses:
+        '201':
+          description: Successfully created subject
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: ID of the created subject
+                  name:
+                    type: string
+                  category:
+                    type: string
+                    example: 68081d3202a459c8915433c7
+                    description: ID of the category
+                  totalOffers:
+                    type: object
+                    properties:
+                      student:
+                        type: integer
+                        example: 0
+                      tutor:
+                        type: integer
+                        example: 0
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Validation error or incorrect input
+        '404':
+          description: Category not found
+        '409':
+          description: Subject with this name already exists
+    delete:
+      tags:
+        - Subjects
+      summary: Delete a subject by ID
+      description: Deletes a subject identified by its unique ID.
+      operationId: deleteSubject
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the subject to delete.
+      responses:
+        '200':
+          description: Subject successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Subject successfully deleted
+        '400':
+          description: Bad Request – Invalid ID supplied
+        '401':
+          description: Unauthorized – JWT token is missing or invalid
+        '403':
+          description: Forbidden – User doesn't have access
+        '404':
+          description: Not Found – Subject not found
+  /subjects/{id}:
+    get:
+      tags:
+        - Subjects
+      summary: Get subject by ID
+      description: This endpoint allows you to get detailed information about a subject by its unique identifier.
+      operationId: getSubjectById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The unique identifier of the subject
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response — subject found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier of the subject
+                    example: "680ab9772c70938761edda5e"
+                  name:
+                    type: string
+                    description: The name of the subject
+                    example: "JavaScript"
+                  category:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The ID of the category
+                        example: "680ab9772c70938761edda5e"
+                      name:
+                        type: string
+                        description: The name of the category
+                        example: "IT"
+                      appearance:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                            description: The path to the category's icon
+                            example: "icons/design.svg"
+                          color:
+                            type: string
+                            description: The color of the category in HEX format
+                            example: "#FF5733"
+                  totalOffers:
+                    type: object
+                    properties:
+                      student:
+                        type: integer
+                        description: Total student offers for the subject
+                      tutor:
+                        type: integer
+                        description: Total tutor offers for the subject
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was created
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The time the subject was last updated
+        '400':
+          description: Invalid subject ID format
+        '404':
+          description: Subject not found
+/subjects/{id}:
+  patch:
+    tags:
+      - Subjects
+    summary: Update a subject
+    description: This endpoint allows you to update an existing subject by its unique identifier. Only the `name` and `category` fields are allowed to be updated.
+    operationId: updateSubjectById
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: The unique identifier of the subject
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The new name of the subject
+                example: "Advanced JavaScript"
+              category:
+                type: string
+                description: The ID of the new category for the subject
+                example: "68081d3202a459c8915433c7"
+            additionalProperties: false
+    responses:
+      '200':
+        description: Successful response — subject updated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  description: The unique identifier of the updated subject
+                  example: "680aba16c2b544ce98e8d35b"
+                name:
+                  type: string
+                  description: The updated name of the subject
+                  example: "Frontend"
+                category:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: The ID of the category
+                      example: "680aba16c2b544ce98e8d35b"
+                    name:
+                      type: string
+                      description: The name of the category
+                      example: "IT"
+                    appearance:
+                      type: object
+                      properties:
+                        icon:
+                          type: string
+                          description: The path to the category's icon
+                          example: "icons/design.svg"
+                        color:
+                          type: string
+                          description: The color of the category in HEX format
+                          example: "#FF5733"
+                totalOffers:
+                  type: object
+                  properties:
+                    student:
+                      type: integer
+                      description: Total student offers for the subject
+                    tutor:
+                      type: integer
+                      description: Total tutor offers for the subject
+                createdAt:
+                  type: string
+                  format: date-time
+                  description: The time the subject was created
+                updatedAt:
+                  type: string
+                  format: date-time
+                  description: The time the subject was last updated
+      '400':
+        description: |
+          Bad Request:
+          - Invalid subject or category ID format
+          - Name is required and must be a non-empty string
+          - Name must be between 2 and 50 characters
+          - No updates provided
+      '404':
+        description: |
+          Not Found:
+          - Subject not found
+          - Category not found
+      '409':
+        description: |
+          Conflict:
+          - Subject with this name already exists

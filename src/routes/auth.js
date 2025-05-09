@@ -10,6 +10,9 @@ const { loginValidationSchema } = require('~/validation/schemas/login')
 const resetPasswordValidationSchema = require('~/validation/schemas/resetPassword')
 const forgotPasswordValidationSchema = require('~/validation/schemas/forgotPassword')
 
+
+
+
 router.post(
   '/signup',
   validationMiddleware(signupValidationSchema),
@@ -31,5 +34,7 @@ router.patch(
   langMiddleware,
   asyncWrapper(authController.updatePassword)
 )
+
+router.get('/confirm-email/:confirmToken', asyncWrapper(authController.confirmEmail))
 
 module.exports = router

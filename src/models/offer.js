@@ -1,31 +1,44 @@
 const { Schema, model } = require('mongoose')
+const { FIELD_CANNOT_BE_EMPTY } = require('~/consts/errors');
 
 const {
   enums: { MAIN_ROLE_ENUM, SPOKEN_LANG_ENUM, PROFICIENCY_LEVEL_ENUM, OFFER_STATUS_ENUM }
 } = require('~/consts/validation')
-const { USER, OFFER } = require('~/consts/models')
+const { USER, OFFER, CATEGORY, SUBJECT } = require('~/consts/models')
 const { ENUM_CAN_BE_ONE_OF } = require('~/consts/errors')
 
 const offerSchema = new Schema(
   {
     price: {
-      type: Number
+      type: Number,
+      required: [true, FIELD_CANNOT_BE_EMPTY('price')],
+      min: [1, 'Price must be at least 1']
     },
     proficiencyLevel: {
       type: String,
+      required: [true, FIELD_CANNOT_BE_EMPTY('proficiencyLevel') ],
       enum: {
         values: PROFICIENCY_LEVEL_ENUM,
         message: ENUM_CAN_BE_ONE_OF('proficiency level', PROFICIENCY_LEVEL_ENUM)
       }
     },
     title: {
-      type: String
+      type: String,
+      required: [true, FIELD_CANNOT_BE_EMPTY('title')],
+      trim: true,
+      minlength: [1, 'Title must be at least 1 character'],
+      maxlength: [100, 'Title must be at most 100 characters']
     },
     description: {
-      type: String
+      type: String,
+      required: [true, FIELD_CANNOT_BE_EMPTY('description')],
+      trim: true,
+      minlength: [1, 'Description must be at least 1 character'],
+      maxlength: [1000, 'Description must be at most 1000 characters']
     },
     languages: {
       type: [String],
+      required: [true, FIELD_CANNOT_BE_EMPTY('languages')],
       enum: {
         values: SPOKEN_LANG_ENUM,
         message: ENUM_CAN_BE_ONE_OF('language', SPOKEN_LANG_ENUM)
@@ -33,6 +46,7 @@ const offerSchema = new Schema(
     },
     authorRole: {
       type: String,
+      required: [true, FIELD_CANNOT_BE_EMPTY('authorRole')],
       enum: {
         values: MAIN_ROLE_ENUM,
         message: ENUM_CAN_BE_ONE_OF('author role', MAIN_ROLE_ENUM)
@@ -40,7 +54,18 @@ const offerSchema = new Schema(
     },
     author: {
       type: Schema.Types.ObjectId,
+      required: [true, FIELD_CANNOT_BE_EMPTY('author')],
       ref: USER
+    },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: CATEGORY,
+      required: [true, FIELD_CANNOT_BE_EMPTY('category')]
+    },
+    subject: {
+      type: Schema.Types.ObjectId,
+      ref: SUBJECT,
+      required: [true, FIELD_CANNOT_BE_EMPTY('subject')]
     },
     status: {
       type: String,
@@ -54,10 +79,14 @@ const offerSchema = new Schema(
       type: [
         {
           question: {
-            type: String
+            type: String,
+            required: [true, FIELD_CANNOT_BE_EMPTY('FAQ-question')],
+            trim: true
           },
           answer: {
-            type: String
+            type: String,
+            required: [true, FIELD_CANNOT_BE_EMPTY('FAQ-answer')],
+            trim: true
           }
         }
       ]

@@ -6,6 +6,8 @@ const {
 const {
   tokenNames: { REFRESH_TOKEN, ACCESS_TOKEN }
 } = require('~/consts/auth')
+const user = require('~/models/user');
+const jwt = require('jsonwebtoken');
 
 const COOKIE_OPTIONS = {
   maxAge: oneDayInMs,
@@ -86,11 +88,19 @@ const updatePassword = async (req, res) => {
   res.status(204).end()
 }
 
+
+const confirmEmail = async (req, res) => {
+    const { confirmToken } = req.params; 
+    const result = await authService.confirmEmail(confirmToken);
+    res.status(200).json(result)
+}
+
 module.exports = {
   signup,
   login,
   logout,
   refreshAccessToken,
   sendResetPasswordEmail,
-  updatePassword
+  updatePassword,
+  confirmEmail
 }

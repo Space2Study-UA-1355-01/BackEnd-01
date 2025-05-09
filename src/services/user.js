@@ -25,7 +25,7 @@ const userService = {
 
   getUserById: async (id, role) => {
     return await User.findOne({ _id: id, ...(role && { role }) })
-      .select('+lastLoginAs +isEmailConfirmed +isFirstLogin')
+      .select('+lastLoginAs +isEmailConfirmed +isFirstLogin +appLanguage')
       .lean()
       .exec()
   },
