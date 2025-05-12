@@ -8,7 +8,28 @@ const SeedSubjects = {
       const categorySubjectsMap = {
         'Design': ['UX/UI Design', 'Graphic Design', 'Motion Design'],
         'Mathematics': ['Algebra', 'Geometry', 'Probability Theory'],
-        'Programming': ['Frontend Development', 'Backend Development', 'Mobile Development']
+        'Programming': [
+          'Frontend Development',
+          'Backend Development',
+          'Mobile Development',
+          'Game Development',
+          'DevOps',
+          'Embedded Systems',
+          'Data Structures & Algorithms',
+          'Databases',
+          'Machine Learning',
+          'Artificial Intelligence',
+          'Cybersecurity',
+          'Cloud Computing',
+          'APIs & Integrations',
+          'Software Testing',
+          'Web Development',
+          'Desktop Applications',
+          'Systems Programming',
+          'Version Control (Git)',
+          'Programming Paradigms',
+          'Code Architecture & Design Patterns'
+        ]
       };
 
       let createdCount = 0;
