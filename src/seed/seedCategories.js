@@ -42,18 +42,23 @@ const SeedCategories = {
         }
       ];
 
+      let createdCount = 0;
+      let existingCount = 0;
+
       for (const categoryData of categories) {
         const exists = await Category.exists({ name: categoryData.name });
 
         if (!exists) {
           await Category.create(categoryData);
-          console.log(`Category "${categoryData.name}" created successfully.`);
+          createdCount++;
         } else {
-          console.log(`Category "${categoryData.name}" already exists.`);
+          existingCount++;
         }
       }
+
+      console.log(`Categories created: ${createdCount}, already existed: ${existingCount}`);
     } catch (err) {
-      logger.error(err);
+      logger.error('Error while seeding categories:', err);
     }
   }
 };

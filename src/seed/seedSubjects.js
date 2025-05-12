@@ -11,6 +11,9 @@ const SeedSubjects = {
         'Programming': ['Frontend Development', 'Backend Development', 'Mobile Development']
       };
 
+      let createdCount = 0;
+      let existingCount = 0;
+
       for (const [categoryName, subjects] of Object.entries(categorySubjectsMap)) {
         const category = await Category.findOne({ name: categoryName });
 
@@ -31,14 +34,16 @@ const SeedSubjects = {
                 tutor: 0
               }
             });
-            console.log(`Subject "${subjectName}" created under category "${categoryName}".`);
+            createdCount++;
           } else {
-            console.log(`Subject "${subjectName}" already exists under category "${categoryName}".`);
+            existingCount++;
           }
         }
       }
+
+      console.log(`Subjects created: ${createdCount}, already existed: ${existingCount}`);
     } catch (err) {
-      logger.error(err);
+      logger.error('Error while seeding subjects:', err);
     }
   }
 };
