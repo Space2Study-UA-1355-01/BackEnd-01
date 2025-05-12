@@ -1,0 +1,607 @@
+components:
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+  schemas:
+    Offer:
+      type: object
+      required:
+        - price
+        - proficiencyLevel
+        - title
+        - description
+        - languages
+        - authorRole
+        - author
+        - category
+        - subject
+        - status
+      properties:
+        price:
+          type: number
+          description: Price of the offer
+          example: 50
+        proficiencyLevel:
+          type: string
+          description: Proficiency level of the offer
+          item:
+            enum:
+              - Beginner
+              - Intermediate
+              - Advanced
+              - Test Preparation
+              - Professional
+              - Specialized
+          example: Intermediate
+        title:
+          type: string
+          description: Title of the offer
+          example: "Sample Offer for Mathematics"
+        description:
+          type: string
+          description: Detailed description of the offer
+          example: "This offer includes full support for Mathematics, including homework help and test preparation."
+        languages:
+          type: array
+          items:
+            type: string
+            enum:
+              - English
+              - Ukrainian
+              - Polish
+              - German
+              - French
+              - Spanish
+              - Arabic
+          description: List of languages spoken in the offer
+          example: ["English", "Ukrainian"]
+        authorRole:
+          type: string
+          description: Role of the author (either 'student' or 'tutor')
+          enum:
+            - student
+            - tutor
+          example: tutor
+        author:
+          type: string
+          description: User ID of the author of the offer
+          example: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        category:
+          type: string
+          description: Category ID under which the offer belongs
+          example: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        subject:
+          type: string
+          description: Subject ID for the offer
+          example: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        status:
+          type: string
+          description: Status of the offer
+          enum:
+            - active
+            - draft
+            - closed
+          default: active
+          example: active
+        FAQ:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+                description: The FAQ question
+                example: "What is included?"
+              answer:
+                type: string
+                description: The answer to the FAQ question
+                example: "The offer includes full support for the subject."
+      example:
+        price: 50
+        proficiencyLevel: Intermediate
+        title: "Sample Offer for Mathematics"
+        description: "This offer includes full support for Mathematics, including homework help and test preparation."
+        languages: ["English", "Ukrainian"]
+        authorRole: tutor
+        author: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        category: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        subject: "5f8f8f8f8f8f8f8f8f8f8f8f"
+        status: active
+        FAQ:
+          - question: "What is included?"
+            answer: "The offer includes full support for the subject."
+          - question: "Who is it for?"
+            answer: "It is for students of all levels."
+paths:
+  /offers:
+    get:
+      summary: Get a list of all offers
+      description: Returns all available offers in the system.
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of offers successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Unique identifier of the offer
+                        price:
+                          type: number
+                          description: Price of the offer
+                        proficiencyLevel:
+                          type: string
+                          description: Proficiency level
+                          enum:
+                            - Beginner
+                            - Intermediate
+                            - Advanced
+                            - Test Preparation
+                            - Professional
+                            - Specialized
+                        title:
+                          type: string
+                          description: Title of the offer
+                        description:
+                          type: string
+                          description: Description of the offer
+                        languages:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                            - English
+                            - Ukrainian
+                            - Polish
+                            - German
+                            - French
+                            - Spanish
+                            - Arabic
+                          description: Languages available for the offer
+                        authorRole:
+                          type: string
+                          description: Role of the author of the offer
+                          enum:
+                            - student
+                            - tutor
+                        author:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              description: Unique identifier of the author
+                            firstName:
+                              type: string
+                              description: First name of the author
+                            lastName:
+                              type: string
+                              description: Last name of the author
+                            totalReviews:
+                              type: object
+                              properties:
+                                student:
+                                  type: number
+                                  description: Total number of reviews from students
+                                tutor:
+                                  type: number
+                                  description: Total number of reviews from tutors
+                            averageRating:
+                              type: object
+                              properties:
+                                student:
+                                  type: number
+                                  description: Average rating from students
+                                tutor:
+                                  type: number
+                                  description: Average rating from tutors
+                            nativeLanguage:
+                              type: array
+                              items:
+                                type: string
+                              description: Native languages of the author
+                        category:
+                          type: string
+                          description: Category of the offer
+                        subject:
+                          type: string
+                          description: Subject related to the offer
+                        status:
+                          type: string
+                          description: Status of the offer
+                          enum:
+                            - active
+                            - draft
+                            - closed
+                        FAQ:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              question:
+                                type: string
+                                description: FAQ question
+                              answer:
+                                type: string
+                                description: FAQ answer
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: Offer creation date
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: Offer last update date
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+    post:
+      summary: Create a new offer
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - price
+                - proficiencyLevel
+                - title
+                - description
+                - languages
+                - category
+                - subject
+              properties:
+                price:
+                  type: number
+                  example: 50
+                  description: Price of the offer.
+                proficiencyLevel:
+                  type: string
+                  enum: [Beginner, Intermediate, Advanced]
+                  example: Beginner
+                  description: Proficiency level required.
+                title:
+                  type: string
+                  example: UX/UI Design Basics
+                  description: Title of the offer.
+                description:
+                  type: string
+                  example: Learn the fundamentals of UX/UI design.
+                  description: Detailed description of the offer.
+                languages:
+                  type: array
+                  items:
+                    type: string
+                    enum: [English, Ukrainian, Polish, German, French, Spanish, Arabic]
+                  example: ["English", "Ukrainian"]
+                  description: Languages in which the offer is available.
+                category:
+                  type: string
+                  example: 681c8bd8b89512256461f270
+                  description: ID of the category.
+                subject:
+                  type: string
+                  example: 681c8bd8b89512256461f280
+                  description: ID of the subject.
+                status:
+                  type: string
+                  enum: [active, hidden, archived]
+                  example: active
+                  description: Status of the offer.
+                FAQ:
+                  type: array
+                  description: List of frequently asked questions.
+                  items:
+                    type: object
+                    required:
+                      - question
+                      - answer
+                    properties:
+                      question:
+                        type: string
+                        example: Is prior experience needed?
+                      answer:
+                        type: string
+                        example: No, this course is suitable for beginners.
+      responses:
+        '201':
+          description: Offer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: "681caa53d986f0bb2eb61f69"
+                  price:
+                    type: number
+                    example: 50
+                  proficiencyLevel:
+                    type: string
+                    example: Beginner
+                  title:
+                    type: string
+                    example: "UX/UI Design Basics"
+                  description:
+                    type: string
+                    example: "Learn the fundamentals of UX/UI design."
+                  languages:
+                    type: array
+                    items:
+                      type: string
+                    example: ["English", "Ukrainian"]
+                  authorRole:
+                    type: string
+                    example: student
+                  author:
+                    type: string
+                    example: "681c8bd7b89512256461f269"
+                  category:
+                    type: string
+                    example: "681c8bd8b89512256461f270"
+                  subject:
+                    type: string
+                    example: "681c8bd8b89512256461f280"
+                  status:
+                    type: string
+                    example: active
+                  FAQ:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FAQItem'
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '409':
+          description: Validation error
+  /offers/{id}:
+    get:
+      summary: Get an offer by ID
+      description: Returns a single offer by its unique ID, including author, subject, and category details.
+      tags:
+        - Offers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: ID of the offer to retrieve
+      responses:
+        '200':
+          description: Offer successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  price:
+                    type: number
+                  proficiencyLevel:
+                    type: string
+                    enum:
+                      - Beginner
+                      - Intermediate
+                      - Advanced
+                      - Test Preparation
+                      - Professional
+                      - Specialized
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  languages:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        - English
+                        - Ukrainian
+                        - Polish
+                        - German
+                        - French
+                        - Spanish
+                        - Arabic
+                    example: ["English"]
+                  authorRole:
+                    type: string
+                    enum:
+                      - student
+                      - tutor
+                  author:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      totalReviews:
+                        type: object
+                        properties:
+                          student:
+                            type: number
+                          tutor:
+                            type: number
+                      averageRating:
+                        type: object
+                        properties:
+                          student:
+                            type: number
+                          tutor:
+                            type: number
+                  category:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      appearance:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                          color:
+                            type: string
+                  subject:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                  status:
+                    type: string
+                    enum:
+                      - active
+                      - draft
+                      - closed
+                  FAQ:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        question:
+                          type: string
+                        answer:
+                          type: string
+                        _id:
+                          type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid ID or request
+        '404':
+          description: Offer not found
+        '500':
+          description: Internal server error
+    patch:
+      summary: Update an existing offer
+      tags:
+        - Offers
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the offer to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                  example: 60
+                  description: Updated price of the offer
+                proficiencyLevel:
+                  type: string
+                  example: Beginner
+                  description: Updated proficiency level
+                title:
+                  type: string
+                  example: Updated UX/UI Design Course
+                  description: Updated title of the offer
+                description:
+                  type: string
+                  example: Now includes bonus Figma lessons.
+                  description: Updated offer description
+                languages:
+                  type: array
+                  items:
+                    type: string
+                  example: ["English", "Polish"]
+                  description: Updated list of spoken languages
+                subject:
+                  type: string
+                  example: 681c8bd8b89512256461f280
+                  description: ID of the updated subject
+                category:
+                  type: string
+                  example: 681c8bd8b89512256461f270
+                  description: ID of the updated category
+                status:
+                  type: string
+                  example: active
+                  description: Updated offer status
+                FAQ:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question:
+                        type: string
+                        example: Are Figma lessons included?
+                      answer:
+                        type: string
+                        example: Yes, Figma basics are covered.
+      responses:
+        '204':
+          description: Offer updated successfully. No content in the response.
+        '400':
+          description: Bad request (validation error)
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '403':
+          description: Forbidden (you are not the author of the offer)
+        '404':
+          description: Offer not found
+    delete:
+      summary: "Delete an offer"
+      description: "Deletes the offer with the specified ID."
+      operationId: "deleteOffer"
+      tags:
+        - "Offers"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the offer to delete"
+          schema:
+            type: string
+            example: "681c8bd8b89512256461f29f"
+      responses:
+        '204':
+          description: The offer was successfully deleted. No content in the response.
+        '401':
+          description: Unauthorized request (missing or invalid token)
+        '403':
+          description: Forbidden (you are not the author of the offer)
+        '404':
+          description: Offer not found
