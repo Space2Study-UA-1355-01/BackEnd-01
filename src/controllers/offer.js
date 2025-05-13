@@ -1,7 +1,13 @@
 const offerService = require('~/services/offer')
 const offerAggregateOptions = require('~/utils/offers/offerAggregateOptions')
+const mongoose = require('mongoose');
 
 const getOffers = async (req, res) => {
+  const { subjectId } = req.query
+
+  if (subjectId && !mongoose.Types.ObjectId.isValid(subjectId)) {
+    return res.status(400).json({ message: 'Invalid subjectId' })
+  }
   const pipeline = offerAggregateOptions(req.query, req.params)
 
   const offers = await offerService.getOffers(pipeline)
