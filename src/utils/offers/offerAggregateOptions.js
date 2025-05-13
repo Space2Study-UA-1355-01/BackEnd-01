@@ -19,7 +19,6 @@ const offerAggregateOptions = (query, params) => {
     skip = 0,
     limit = 5
   } = query
-  // const { id: authorId } = params
 
   const match = {}
 
