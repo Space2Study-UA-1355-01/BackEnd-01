@@ -12,12 +12,14 @@ const offerAggregateOptions = (query, params) => {
     languages,
     nativeLanguage,
     excludedOfferId,
+    authorId,
+    subjectId,
     sort = 'createdAt',
     status,
     skip = 0,
     limit = 5
   } = query
-  const { id: authorId } = params
+  // const { id: authorId } = params
 
   const match = {}
 
@@ -38,6 +40,11 @@ const offerAggregateOptions = (query, params) => {
 
   if (authorId) {
     match['author._id'] = mongoose.Types.ObjectId(authorId)
+  }
+
+  if (subjectId) {
+    match['subject'] = mongoose.Types.ObjectId(subjectId)
+
   }
 
   if (authorRole) {
