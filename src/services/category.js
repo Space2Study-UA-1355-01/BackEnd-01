@@ -18,7 +18,7 @@ const categoryService = {
 
     const categoriesWithOffers = categories.map(category => ({
       ...category,
-      totalOffers: 10
+      totalOffers: Math.floor(Math.random() * 101)
     }));
 
     return {
