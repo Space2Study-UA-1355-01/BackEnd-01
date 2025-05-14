@@ -18,12 +18,16 @@ const getSubjects = async (req, res) => {
 
 const createSubject = async (req, res) => {
   const subjectData = req.body;
+  
+  const userRole = req.user?.role;
+  console.log('req.user:', req.user);
+  console.log("ddddddddddddd" + userRole);
 
   if (!subjectData?.name || !subjectData?.category) {
     return res.status(400).json({ message: 'Name and category are required.' });
   }
 
-  const newSubject = await subjectService.createSubject(subjectData);
+  const newSubject = await subjectService.createSubject(subjectData, userRole);
 
   res.status(201).json(newSubject);
 };

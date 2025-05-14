@@ -13,7 +13,7 @@ router.get(
 router.post(
   '/',
   authMiddleware,
-  restrictTo('admin'), 
+  restrictTo('admin', 'student', 'tutor'), 
   asyncWrapper(subjectController.createSubject)
 );
 

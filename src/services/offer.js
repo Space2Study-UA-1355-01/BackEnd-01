@@ -2,6 +2,8 @@ const Offer = require('~/models/offer')
 
 const filterAllowedFields = require('~/utils/filterAllowedFields')
 const { allowedOfferFieldsForUpdate } = require('~/validation/services/offer')
+const { validateOfferOnCreate, validateOfferOnUpdate } = require('~/validation/services/offer')
+
 
 const offerService = {
   getOffers: async (pipeline) => {
@@ -32,7 +34,8 @@ const offerService = {
   },
 
   createOffer: async (author, authorRole, data) => {
-    const { price, proficiencyLevel, title, description, languages, subject, category, status, FAQ } = data
+    const validatedData = await validateOfferOnCreate(data);
+    const { price, proficiencyLevel, title, description, languages, subject, category, status, FAQ } = validatedData
 
     return await Offer.create({
       author,
@@ -50,7 +53,8 @@ const offerService = {
   },
 
   updateOffer: async (id, currentUserId, updateData) => {
-    const filteredUpdateData = filterAllowedFields(updateData, allowedOfferFieldsForUpdate)
+    const validatedData = await validateOfferOnUpdate(updateData, id);
+    const filteredUpdateData = filterAllowedFields(validatedData, allowedOfferFieldsForUpdate)
 
     const offer = await Offer.findById(id)
 

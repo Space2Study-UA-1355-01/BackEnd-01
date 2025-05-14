@@ -34,6 +34,16 @@ components:
               type: integer
               description: The number of offers available for tutors in this subject
               example: 25
+        description:
+          type: string
+          maxLength: 500
+          description: A short description of the subject (max 500 characters)
+          example: "This subject covers all basic and advanced topics in mathematics."
+        status:
+          type: string
+          enum: [active, requested]
+          description: Indicates whether the subject is active or pending approval
+          example: "active"
         createdAt:
           type: string
           format: date-time
@@ -99,6 +109,8 @@ paths:
                           appearance:
                             icon: "icons/dev.svg"
                             color: "#66C42C"
+                        description: "This subject covers all basic and advanced topics in mathematics"
+                        status: "active"
                         totalOffers:
                           student: 0
                           tutor: 0

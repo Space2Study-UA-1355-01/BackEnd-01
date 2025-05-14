@@ -463,6 +463,16 @@ paths:
                           type: string
                           description: The color of the category in HEX format
                           example: "#FF5733"
+                description:
+                  type: string
+                  maxLength: 500
+                  description: A short description of the subject (max 500 characters)
+                  example: "This subject covers all basic and advanced topics in mathematics."
+                status:
+                  type: string
+                  enum: [active, requested]
+                  description: Indicates whether the subject is active or pending approval
+                  example: "active"
                 total:
                   type: integer
                   example: 57

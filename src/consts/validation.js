@@ -22,7 +22,8 @@ const enums = {
   QUESTION_TYPE_ENUM: ['multipleChoice', 'openAnswer', 'oneAnswer'],
   QUIZ_VIEW_ENUM: ['Stepper', 'Scroll'],
   RESOURCES_TYPES_ENUM: ['lessons', 'attachments', 'questions', 'quizzes'],
-  OFFER_STATUS_ENUM: ['active', 'draft', 'closed']
+  OFFER_STATUS_ENUM: ['active', 'draft', 'closed'],
+  SUBJECT_STATUS_ENUM: ['active', 'requested']
 }
 
 module.exports = {
