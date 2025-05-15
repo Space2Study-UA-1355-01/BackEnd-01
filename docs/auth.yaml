@@ -40,6 +40,75 @@ paths:
                status: 400
                code: 'EMAIL_NOT_SENT'
                message: 'Email has not been sent.'
+ /auth/google:
+  post:
+    tags:
+      - Auth
+    summary: Authenticate with Google
+    description: Authenticate or create user using Google OAuth token
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - idToken
+            properties:
+              idToken:
+                type: string
+                description: Google OAuth ID token
+          example:
+            idToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFiZDY3..."
+    responses:
+      '200':
+        description: Successfully authenticated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  description: JWT access token for future requests
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+            example:
+              accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+              user:
+                id: "507f1f77bcf86cd799439011"
+                email: "user@gmail.com"
+                firstName: "John"
+                lastName: "Doe"
+      '400':
+        description: Missing or invalid request parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Error'
+            example:
+              status: 400
+              code: "MISSING_TOKEN"
+              message: "Google ID token is required"
+      '401':
+        description: Invalid Google token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Error'
+            example:
+              status: 401
+              code: "INVALID_GMAIL_TOKEN"
+              message: "Invalid or expired Gmail token"
 
 components:
  signup:

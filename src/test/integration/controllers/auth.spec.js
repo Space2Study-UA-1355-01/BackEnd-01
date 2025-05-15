@@ -114,4 +114,142 @@ describe('Auth controller', () => {
       expectError(400, errors.BAD_RESET_TOKEN, response)
     })
   })
+
+  describe('Google Auth endpoint', () => {
+    const mockGooglePayload = {
+      email: 'test@gmail.com',
+      given_name: 'Test',
+      family_name: 'User',
+      picture: 'https://example.com/photo.jpg',
+      sub: '12345'
+    }
+
+    beforeEach(() => {
+      jest.spyOn(OAuth2Client.prototype, 'verifyIdToken').mockImplementation(() => ({
+        getPayload: () => mockGooglePayload
+      }))
+    })
+
+    afterEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should authenticate with Google and return tokens', async () => {
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_google_token' })
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('accessToken') 
+      expect(response.cookies).toHaveProperty('refreshToken')
+    })
+
+    it('should return 400 when idToken is missing', async () => {
+      const response = await app.post('/auth/google').send({})
+      expect(response.status).toBe(400)
+    })
+
+    it('should return 401 for invalid Google token', async () => {
+      OAuth2Client.prototype.verifyIdToken.mockRejectedValue(new Error())
+      
+      const response = await app
+        .post('/auth/google') 
+        .send({ idToken: 'invalid_token' })
+
+      expect(response.status).toBe(401)
+    })
+
+    it('should create new user when logging in with Google for first time', async () => {
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_google_token' });
+
+      expect(response.status).toBe(200);
+      const user = await User.findOne({ email: mockGooglePayload.email });
+      expect(user).toBeTruthy();
+      expect(user.isEmailConfirmed).toBe(true);
+    });
+
+    it('should login existing user with Google', async () => {
+      await User.create({
+        email: mockGooglePayload.email,
+        firstName: mockGooglePayload.given_name,
+        lastName: mockGooglePayload.family_name,
+        isEmailConfirmed: true
+      });
+
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_google_token' });
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should handle expired Google token', async () => {
+      OAuth2Client.prototype.verifyIdToken.mockRejectedValue(
+        new Error('Token expired')
+      );
+      
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'expired_token' });
+
+      expect(response.status).toBe(401);
+      expect(response.body.code).toBe('INVALID_GOOGLE_TOKEN');
+    });
+
+    it('should handle invalid token format', async () => {
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'invalid_format' });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should preserve user data between logins', async () => {
+      await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_google_token' });
+
+      const user = await User.findOne({ email: mockGooglePayload.email });
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { professionalSummary: 'Test summary' }}
+      );
+
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_google_token' });
+
+      expect(response.status).toBe(200);
+      
+      const updatedUser = await User.findOne({ email: mockGooglePayload.email });
+      expect(updatedUser.professionalSummary).toBe('Test summary');
+    });
+
+    it('should handle network errors during Google verification', async () => {
+      OAuth2Client.prototype.verifyIdToken.mockRejectedValue(
+        new Error('Network error')
+      );
+      
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'valid_token' });
+
+      expect(response.status).toBe(500);
+    });
+  })
+
+  describe('Gmail Auth endpoint', () => {
+    it('should return 401 for invalid Gmail token', async () => {
+      OAuth2Client.prototype.verifyIdToken.mockRejectedValue(new Error())
+      
+      const response = await app
+        .post('/auth/google')
+        .send({ idToken: 'invalid_token' })
+
+      expect(response.status).toBe(401)
+      expect(response.body.code).toBe('INVALID_GMAIL_TOKEN')
+    })
+  })
 })
