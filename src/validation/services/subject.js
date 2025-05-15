@@ -6,6 +6,7 @@ const filterAllowedFields = require('~/utils/filterAllowedFields')
 const allowedSubjectFieldsForUpdate = {
     name: true,
     category: true,
+    description: true,
   }
 
 const validateCategoryOnUpdate = async (subjectId, updateData) => {
@@ -58,7 +59,7 @@ const validateCategoryOnUpdate = async (subjectId, updateData) => {
 }
 
 const validateSubjectOnCreate = async (subjectData) => {
-  const { name, category } = subjectData;
+  const { name, category, description } = subjectData;
 
   if (typeof name !== 'string' || !name.trim()) {
     const error = new Error('Name is required and must be a non-empty string.');
@@ -94,7 +95,8 @@ const validateSubjectOnCreate = async (subjectData) => {
 
   return {
     name: name.trim(),
-    category
+    category,
+    description,
   };
 };
 

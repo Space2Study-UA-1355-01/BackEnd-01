@@ -4,7 +4,7 @@ const { validateCategoryOnUpdate, validateSubjectOnCreate } = require('~/validat
 
 const subjectService = {
   getSubjects: async ({ search = '', page = 1, limit = 20 } = {}) => {
-    const query = {};
+    const query = { status: 'active' };
 
     if (search) {
       query.name = { $regex: `^${search}`, $options: 'i' };
@@ -31,9 +31,13 @@ const subjectService = {
     };
   },
 
-  createSubject: async (subjectData) => {
+  createSubject: async (subjectData, userRole) => {
     try {
       const validatedData = await validateSubjectOnCreate(subjectData);
+      
+      if (['student', 'tutor'].includes(userRole)) {
+        validatedData.status = 'requested';
+      }
   
       const newSubject = new Subject(validatedData);
       await newSubject.save();

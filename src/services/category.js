@@ -31,7 +31,7 @@ const categoryService = {
   },
 
   getSubjectNamesByCategoryId: async (categoryId, { search = '', page = 1, limit = 20 } = {}) => {
-    const query = { category: categoryId };
+    const query = { category: categoryId, status: 'active' };
   
     if (search) {
       query.name = { $regex: `^${search}`, $options: 'i' };
@@ -137,7 +137,7 @@ const categoryService = {
   },
 
   getSubjectsByCategoryId: async (categoryId, { search = '', page = 1, limit = 20 } = {}) => {
-    const query = { category: categoryId };
+    const query = { category: categoryId, status: 'active' };
   
     if (search) {
       query.name = { $regex: `^${search}`, $options: 'i' };
