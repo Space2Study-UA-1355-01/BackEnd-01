@@ -14,6 +14,7 @@ const offerAggregateOptions = (query, params) => {
     excludedOfferId,
     authorId,
     subjectId,
+    categoryId,
     sort = 'createdAt',
     status,
     skip = 0,
@@ -43,6 +44,11 @@ const offerAggregateOptions = (query, params) => {
 
   if (subjectId) {
     match['subject'] = mongoose.Types.ObjectId(subjectId)
+
+  }
+
+  if (categoryId) {
+    match['category'] = mongoose.Types.ObjectId(categoryId)
 
   }
 

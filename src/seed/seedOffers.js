@@ -19,7 +19,7 @@ const SeedOffers = {
         throw new Error('User with role "tutor" not found.');
       }
 
-      const subjects = await Subject.find().populate('category').limit(5);
+      const subjects = await Subject.find().populate('category').limit(20);
       if (!subjects.length) {
         throw new Error('No available subjects found to create offers.');
       }
