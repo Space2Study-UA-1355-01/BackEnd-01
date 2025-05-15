@@ -133,6 +133,26 @@ const offerAggregateOptions = (query, params) => {
       $unwind: '$author'
     },
     {
+      $lookup: {
+        from: 'subjects',
+        localField: 'subject',
+        foreignField: '_id',
+        pipeline: [{ $project: { name: 1 } }],
+        as: 'subjectData'
+      }
+    },
+    {
+      $unwind: {
+        path: '$subjectData',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $addFields: {
+        subjectName: '$subjectData.name'
+      }
+    },
+    {
       $match: match
     },
     {
