@@ -18,7 +18,7 @@ const offerAggregateOptions = (query, params) => {
     sort = 'createdAt',
     status,
     skip = 0,
-    limit = 5
+    limit = 20
   } = query
 
   const match = {}
