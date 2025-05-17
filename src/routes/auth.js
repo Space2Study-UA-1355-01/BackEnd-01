@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { OAuth2Client } = require('google-auth-library')
 
 const asyncWrapper = require('~/middlewares/asyncWrapper')
 const validationMiddleware = require('~/middlewares/validation')
@@ -34,5 +35,19 @@ router.patch(
 )
 
 router.get('/confirm-email/:confirmToken', asyncWrapper(authController.confirmEmail))
+router.get('/google/test', asyncWrapper(async (req, res) => {
+  if (!process.env.GOOGLE_CLIENT_ID) {
+    return res.status(500).json({ 
+      error: 'GOOGLE_CLIENT_ID not configured'
+    });
+  }
+
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  res.json({
+    status: 'ok',
+    clientConfigured: !!client,
+    clientId: process.env.GOOGLE_CLIENT_ID.substring(0, 10) + '...'
+  });
+}));
 
 module.exports = router

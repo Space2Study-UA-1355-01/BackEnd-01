@@ -1,5 +1,14 @@
-const { OAuth2Client } = require('google-auth-library')
-const client = new OAuth2Client(process.env.GMAIL_CLIENT_ID)
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  redirectUri: process.env.GOOGLE_REDIRECT_URI
+});
+
+if (!process.env.GOOGLE_CLIENT_ID) {
+  throw new Error('GOOGLE_CLIENT_ID environment variable is required');
+}
+
 const tokenService = require('~/services/token')
 const emailService = require('~/services/email')
 const { getUserByEmail, createUser, privateUpdateUser, getUserById } = require('~/services/user')
@@ -21,9 +30,6 @@ const {
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const SALT_ROUNDS = 10
-if (!process.env.GMAIL_CLIENT_ID) {
-  throw new Error('GMAIL_CLIENT_ID environment variable is required');
-}
 
 const authService = {
   signup: async (role, firstName, lastName, email, password, language) => {
@@ -146,6 +152,50 @@ const authService = {
 
     await privateUpdateUser(user._id, { isEmailConfirmed: true })
     return { message: 'Email successfully confirmed' }
+  },
+
+  loginWithGoogle: async (idToken, role = 'student') => {
+    try {
+      const googleUser = await verifyGoogleToken(idToken);
+      let user = await getUserByEmail(googleUser.email);
+      
+      if (!user) {
+        // Step 1: Create user first with role array
+        const roles = [role];
+        user = await createUser(
+          roles,
+          googleUser.firstName || '',
+          googleUser.lastName || '',
+          googleUser.email,
+          'googleAuth123',
+          'en',
+          true
+        );
+      } else {
+        // If user exists, just update lastLoginAs
+        await privateUpdateUser(user._id, {
+          lastLoginAs: role // role як string
+        });
+      }
+
+      // Get tokens
+      const tokens = await authService.login(googleUser.email, null, true);
+      
+      if (!tokens) {
+        throw createError(401, {
+          code: 'LOGIN_FAILED',
+          message: 'Failed to generate auth tokens'
+        });
+      }
+
+      return tokens;
+    } catch (error) {
+      console.error('Google auth error:', error);
+      throw createError(401, {
+        code: 'GOOGLE_AUTH_FAILED',
+        message: error.message || 'Google authentication failed'
+      });
+    }
   }
 }
 
@@ -153,35 +203,31 @@ async function verifyGoogleToken(idToken) {
   try {
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GMAIL_CLIENT_ID
-    })
-    const payload = ticket.getPayload()
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    
+    if (!payload) {
+      throw createError(401, {
+        code: 'INVALID_GOOGLE_TOKEN',
+        message: 'Invalid or expired Google token'
+      });
+    }
+    
     return {
       email: payload.email,
       firstName: payload.given_name || '',
       lastName: payload.family_name || '',
       avatar: payload.picture || '',
       sub: payload.sub
-    }
+    };
   } catch (error) {
-    throw createError(401, 'Invalid Google token')
+    console.error('Google token verification failed:', error);
+    throw createError(401, {
+      code: 'INVALID_GOOGLE_TOKEN', 
+      message: 'Failed to verify Google token'
+    });
   }
-}
-
-authService.loginWithGoogle = async (idToken) => {
-  const googleUser = await verifyGoogleToken(idToken)
-
-  let user = await getUserByEmail(googleUser.email)
-
-  if (!user) {
-    user = await createUser('user', googleUser.firstName, googleUser.lastName, googleUser.email, null, 'en', {
-      avatar: googleUser.avatar,
-      googleId: googleUser.sub,
-      isEmailConfirmed: true
-    })
-  }
-
-  return await authService.login(googleUser.email, null, true)
 }
 
 module.exports = authService

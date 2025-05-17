@@ -122,17 +122,17 @@ describe('Auth controller', () => {
       family_name: 'User',
       picture: 'https://example.com/photo.jpg',
       sub: '12345'
-    }
+    };
 
     beforeEach(() => {
       jest.spyOn(OAuth2Client.prototype, 'verifyIdToken').mockImplementation(() => ({
         getPayload: () => mockGooglePayload
-      }))
-    })
+      }));
+    });
 
     afterEach(() => {
-      jest.clearAllMocks()
-    })
+      jest.clearAllMocks();
+    });
 
     it('should authenticate with Google and return tokens', async () => {
       const response = await app
@@ -144,10 +144,14 @@ describe('Auth controller', () => {
       expect(response.cookies).toHaveProperty('refreshToken')
     })
 
-    it('should return 400 when idToken is missing', async () => {
-      const response = await app.post('/auth/google').send({})
-      expect(response.status).toBe(400)
-    })
+    it('should handle missing idToken', async () => {
+      const response = await app
+        .post('/auth/google')
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body.code).toBe('MISSING_TOKEN');
+    });
 
     it('should return 401 for invalid Google token', async () => {
       OAuth2Client.prototype.verifyIdToken.mockRejectedValue(new Error())
@@ -240,8 +244,8 @@ describe('Auth controller', () => {
     });
   })
 
-  describe('Gmail Auth endpoint', () => {
-    it('should return 401 for invalid Gmail token', async () => {
+  describe('Google Auth endpoint', () => {
+    it('should return 401 for invalid Google token', async () => {
       OAuth2Client.prototype.verifyIdToken.mockRejectedValue(new Error())
       
       const response = await app
@@ -249,7 +253,7 @@ describe('Auth controller', () => {
         .send({ idToken: 'invalid_token' })
 
       expect(response.status).toBe(401)
-      expect(response.body.code).toBe('INVALID_GMAIL_TOKEN')
+      expect(response.body.code).toBe('INVALID_GOOGLE_TOKEN')
     })
   })
 })

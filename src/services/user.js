@@ -43,22 +43,16 @@ const userService = {
     return user
   },
 
-  createUser: async (role, firstName, lastName, email, password, appLanguage, isEmailConfirmed = false) => {
-    const duplicateUser = await userService.getUserByEmail(email)
-
-    if (duplicateUser) {
-      throw createError(409, ALREADY_REGISTERED)
-    }
-
+  createUser: async (role, firstName, lastName, email, password, language, isEmailConfirmed = false) => {
     return await User.create({
       role,
       firstName,
       lastName,
       email,
-      lastLoginAs: role,
       password,
-      appLanguage,
-      isEmailConfirmed
+      appLanguage: language,
+      isEmailConfirmed,
+      lastLoginAs: role[0] // беремо перший елемент з масиву ролей
     })
   },
 

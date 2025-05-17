@@ -16,10 +16,10 @@ const config = {
 
 const gmailCredentials = {
   user: process.env.MAIL_USER,
-  clientId: process.env.GMAIL_CLIENT_ID,
-  clientSecret: process.env.GMAIL_CLIENT_SECRET,
-  refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-  redirectUri: process.env.GMAIL_REDIRECT_URI
+  clientId: process.env.GOOGLE_CLIENT_ID,       
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,  
+  refreshToken: process.env.GOOGLE_REFRESH_TOKEN,  
+  redirectUri: process.env.GOOGLE_REDIRECT_URI     
 }
 
 const superAdmin = {
